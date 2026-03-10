@@ -3,6 +3,7 @@ from __future__ import annotations
 import sys, os, threading
 sys.path.insert(0, os.path.dirname(__file__))
 import gui.bridge as bridge
+from gui.renderer import _NO_CLICK
 sys.modules["ui"] = bridge          # 替换 ui 模块
 import pygame
 from game import Game
@@ -125,7 +126,7 @@ class GameScene:
                 if ev.type==pygame.QUIT: pygame.quit(); sys.exit()
                 if ev.type==pygame.MOUSEBUTTONDOWN:
                     ans=self.renderer.handle_click(ev.pos,current_req)
-                    if ans is not None:
+                    if ans is not _NO_CLICK:
                         bridge.respond(ans)
                         current_req=None
                 if ev.type==pygame.MOUSEWHEEL:

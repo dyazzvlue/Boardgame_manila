@@ -1,5 +1,6 @@
 """gui/renderer.py — pygame board renderer"""
 from __future__ import annotations
+_NO_CLICK = object()  # 哨兵：区分"未点击"与"点击了值为None的按钮"
 import pygame
 from typing import Optional, Any, List, Tuple
 from constants import CFG, Goods
@@ -246,7 +247,9 @@ class GameRenderer:
             return
         rt=req.get("type","")
         if rt!=self._current_req_type:
-            self._current_req_type=rt; self._dialog_state={}
+            if self._current_req_type is not None:  # 真正换了请求类型才清空状态
+                self._dialog_state={}
+            self._current_req_type=rt
             self._rebuild_buttons(req,ctx,0,self.ACTION_Y)
         title=self._title(req); ts=_font(15,True).render(title,True,TEXT_BRIGHT); screen.blit(ts,(14,self.ACTION_Y+8))
         if rt=="bid":
@@ -285,11 +288,14 @@ class GameRenderer:
                            Button((bx+bw//2+10,by+bh//2-22,120,44),"否",False)]
         elif rt=="int":
             lo=req.get("lo",0); hi=req.get("hi",10); mid=(lo+hi)//2
-            self._dialog_state={"value":mid}
-            self._buttons=self._stepper(bx,by,bw,bh,lo,hi,mid)
+            if "value" not in self._dialog_state:
+                self._dialog_state["value"]=mid
+            self._buttons=self._stepper(bx,by,bw,bh,lo,hi,self._dialog_state["value"])
         elif rt=="bid":
             mn=req.get("min_bid",1); mx=self._pmoney(req.get("player_name",""),ctx)
-            self._dialog_state={"value":mn,"max":mx}
+            if "value" not in self._dialog_state:
+                self._dialog_state["value"]=mn
+            self._dialog_state["max"]=mx  # 每次更新上限
             self._buttons=self._bid_btns(req,bx,by,bw,bh)
         elif rt=="choose_goods":
             goods=req.get("goods",[]); self._grid([(CFG["goods"][g.value]["name"]+"\n(排除此项)",g) for g in goods],bx,by,bw,bh,4,[GOODS_COLORS[g] for g in goods])
@@ -303,14 +309,16 @@ class GameRenderer:
             self._grid([(t,v) for t,v,_ in opts],bx,by,bw,bh,5,[c for _,_,c in opts])
         elif rt=="ship_placement":
             goods=req.get("active_goods",[]); tgt=CFG["game"]["ship_start_sum"]
-            init=self._init_pos(goods); self._dialog_state={"positions":dict(init),"target":tgt}
+            if "positions" not in self._dialog_state:
+                init=self._init_pos(goods); self._dialog_state={"positions":dict(init),"target":tgt}
             self._buttons=self._place_btns(goods,bx,by,bw,bh)
         elif rt=="deploy":
             self._deploy_btns(req,ctx,bx,by,bw,bh)
         elif rt=="navigator_moves":
             ud=req.get("undocked_goods",[]); ms=req.get("move_steps",1)
             ships=req.get("ships",{}); lp={g:ships[g].position for g in ud if g in ships}
-            self._dialog_state={"moves":[],"local_pos":lp,"max_steps":ms}
+            if "moves" not in self._dialog_state:
+                self._dialog_state={"moves":[],"local_pos":lp,"max_steps":ms}
             self._nav_btns(req,bx,by,bw,bh)
         elif rt=="pirate_board":
             goods=req.get("active_goods",[]); self._grid([(CFG["goods"][g.value]["name"]+"\n(登此船)",g) for g in goods]+[("放弃",None)],bx,by,bw,bh,4,[GOODS_COLORS.get(g,BTN_NORMAL) for g in goods]+[BTN_NORMAL])
@@ -406,7 +414,7 @@ class GameRenderer:
         self._grid([(t,v) for t,v,_ in opts],bx,by,bw,bh,4,[c for _,_,c in opts])
 
     def handle_click(self,pos,current_req):
-        if not current_req: return None
+        if not current_req: return _NO_CLICK
         for btn in self._buttons:
             if not btn.clicked(pos): continue
             val=btn.value; rt=current_req.get("type","")
@@ -415,27 +423,27 @@ class GameRenderer:
                 if k=="bd":   # bid delta
                     cv=self._dialog_state.get("value",current_req.get("min_bid",1))
                     mn=current_req.get("min_bid",1); mx=self._dialog_state.get("max",999)
-                    self._dialog_state["value"]=max(mn,min(mx,cv+val[1])); self._current_req_type=None; return None
+                    self._dialog_state["value"]=max(mn,min(mx,cv+val[1])); self._current_req_type=None; return _NO_CLICK
                 if k=="bc": return val[1]   # bid confirm
                 if k=="bf": return 0        # bid fold
                 if k=="st":  # stepper delta
                     lo=current_req.get("lo",0); hi=current_req.get("hi",10)
                     cv=self._dialog_state.get("value",(lo+hi)//2)
-                    self._dialog_state["value"]=max(lo,min(hi,cv+val[1])); self._current_req_type=None; return None
+                    self._dialog_state["value"]=max(lo,min(hi,cv+val[1])); self._current_req_type=None; return _NO_CLICK
                 if k=="ci": return self._dialog_state.get("value",val[1])
                 if k=="pd":  # place delta
                     _,g,d=val; pd=self._dialog_state.get("positions",{})
-                    pd[g]=max(0,min(5,pd.get(g,1)+d)); self._current_req_type=None; return None
+                    pd[g]=max(0,min(5,pd.get(g,1)+d)); self._current_req_type=None; return _NO_CLICK
                 if k=="pc": return val[1]   # place confirm
                 if k=="nm":  # nav move
                     _,g,d=val; lp=self._dialog_state.get("local_pos",{})
                     lp[g]=lp.get(g,0)+d; self._dialog_state["moves"].append((g,d))
                     if len(self._dialog_state["moves"])>=self._dialog_state.get("max_steps",1):
                         return list(self._dialog_state["moves"])
-                    self._current_req_type=None; return None
+                    self._current_req_type=None; return _NO_CLICK
                 if k=="nd": return list(self._dialog_state.get("moves",[]))
             return val
-        return None
+        return _NO_CLICK
 
     def _player_index(self,player,ctx):
         for i,p in enumerate(ctx.get("players",[])):

@@ -191,15 +191,19 @@ class Game:
     # ─────────────────────────────────────────────────────────
     def _bid_harbor_master(self) -> Player:
         n = len(self.players)
-        prev_hm = self.players[self.hm_index]
+        is_first_round = (self.round_num == 1)
+        prev_hm = self.players[self.hm_index] if not is_first_round else None
         print("\n" + "=" * 50)
         print(f"{ui.BOLD}── 竞拍港务长 ──{ui.RESET}")
-        print(f"  上轮港务长: {prev_hm.name}")
+        if is_first_round:
+            print("  第一轮：所有玩家均可参与竞价")
+        else:
+            print(f"  上轮港务长: {prev_hm.name}")
 
         current_bid = 0
-        winning_player = prev_hm
-        # 从港务长下家开始顺时针
-        order = [(self.hm_index + i + 1) % n for i in range(n - 1)]
+        winning_player = prev_hm  # None 表示第一轮无默认赢家
+        # 所有轮次全员参与竞价
+        order = list(range(n))
         active_bidders = list(order)
 
         # 循环叫价：除当前最高出价者外，其余人可继续出价，直到一轮内无人再加价
@@ -209,8 +213,8 @@ class Game:
             for idx in active_bidders:
                 if idx in passed:
                     continue
-                # 当前最高出价者不需要自己超自己
-                if self.players[idx] is winning_player and current_bid > 0:
+                # 当前最高出价者不需要自己超自己（第一轮 winning_player 为 None，跳过此检查）
+                if winning_player is not None and self.players[idx] is winning_player and current_bid > 0:
                     continue
                 p = self.players[idx]
                 min_bid = current_bid + 1
@@ -236,15 +240,20 @@ class Game:
             # 重置：让其他非放弃者可以继续叫价
             # passed 只记录永久放弃者，每轮自动跳过他们
 
-        # 港务长支付竞价费用给池子（或上轮港务长）
-        if winning_player != prev_hm and current_bid > 0:
+        # 第一轮无人出价时随机选定港务长
+        if is_first_round and winning_player is None:
+            import random as _rnd
+            winning_player = _rnd.choice(self.players)
+            print(f"  无人竞价，随机选定 {winning_player.name} 为第一任港务长")
+            self.logger.record(self.round_num, 0, winning_player.name, "随机成为港务长", {"cost": 0})
+        elif winning_player != prev_hm and current_bid > 0:
             winning_player.pay(current_bid)
-            prev_hm.collect(current_bid)
-            print(f"  {winning_player.name} 花费 {current_bid} 比索成为港务长，上轮港务长 {prev_hm.name} 获得 {current_bid}")
+            print(f"  {winning_player.name} 花费 {current_bid} 比索成为港务长（费用交银行）")
             self.logger.record(self.round_num, 0, winning_player.name, "成为港务长", {"cost": current_bid})
         else:
-            print(f"  无人竞价，{prev_hm.name} 免费连任港务长")
-            self.logger.record(self.round_num, 0, prev_hm.name, "连任港务长", {"cost": 0})
+            lbl = prev_hm.name if prev_hm else winning_player.name
+            print(f"  无人竞价，{lbl} 免费连任港务长")
+            self.logger.record(self.round_num, 0, lbl, "连任港务长", {"cost": 0})
 
         return winning_player
 

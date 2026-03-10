@@ -180,11 +180,12 @@ def ask_ship_placement(player_name: str, active_goods: list, n_ships: int) -> di
 
 
 def ask_choose_goods(player_name: str, all_goods: list) -> list:
-    return _ask({
+    excluded = _ask({
         "type": "choose_goods",
         "player_name": player_name,
         "goods": list(all_goods),
     })
+    return [g for g in all_goods if g != excluded]
 
 
 def ask_buy_stock(player_name: str, market, player_money: int):
