@@ -53,19 +53,35 @@ python3 gui_main.py
 
 ### 打包为可执行文件
 
+需要先安装 `pyinstaller`（脚本会自动安装）：
+
+```bash
+pip install pyinstaller pygame
+```
+
 **Linux**
 
 ```bash
 bash build_linux.sh
-# 生成 dist/manila
+# 生成 bin/linux/manila
 ```
 
-**Windows**
+**Windows**（在项目目录中双击或在 cmd 中运行）
 
 ```bat
 build_windows.bat
-:: 生成 dist\manila.exe
+:: 生成 bin\windows\manila.exe
 ```
+
+也可以直接使用 spec 文件构建（跨平台）：
+
+```bash
+pyinstaller gui_main.spec
+# 输出至 dist/manila（Linux）或 dist/manila.exe（Windows）
+```
+
+> **注意**：首次构建时 PyInstaller 会分析所有依赖，耗时约 1–3 分钟。
+> `dist/` 和 `build/` 目录可以安全删除，可执行文件在 `bin/linux/` 或 `bin\windows\` 下。
 
 ---
 

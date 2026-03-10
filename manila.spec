@@ -1,23 +1,33 @@
 # -*- mode: python ; coding: utf-8 -*-
-import sys, os
+
+
+block_cipher = None
+
+
 a = Analysis(
     ['gui_main.py'],
-    pathex=[os.getcwd()],
+    pathex=[],
     binaries=[],
     datas=[('data', 'data')],
-    hiddenimports=['pygame', 'pygame.font', 'pygame.mixer', 'pygame.image',
-                   'gui', 'gui.bridge', 'gui.renderer',
-                   'constants', 'player', 'ai', 'game', 'market',
-                   'ship', 'board', 'logger'],
+    hiddenimports=['gui', 'gui.bridge', 'gui.renderer', 'constants', 'player', 'ai', 'game', 'market', 'ship', 'board', 'logger', 'pygame', 'pygame.font', 'pygame.mixer', 'pygame.image'],
     hookspath=[],
     hooksconfig={},
     runtime_hooks=[],
-    excludes=[],
+    excludes=['matplotlib', 'scipy', 'numpy', 'pandas', 'PIL', 'cv2', 'tkinter'],
+    win_no_prefer_redirects=False,
+    win_private_assemblies=False,
+    cipher=block_cipher,
     noarchive=False,
 )
-pyz = PYZ(a.pure)
+pyz = PYZ(a.pure, a.zipped_data, cipher=block_cipher)
+
 exe = EXE(
-    pyz, a.scripts, a.binaries, a.datas, [],
+    pyz,
+    a.scripts,
+    a.binaries,
+    a.zipfiles,
+    a.datas,
+    [],
     name='manila',
     debug=False,
     bootloader_ignore_signals=False,
