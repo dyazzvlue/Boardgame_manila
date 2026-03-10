@@ -9,6 +9,8 @@ import json as _json
 import time as _time
 import os as _os
 import random as _random
+import re as _re
+import builtins as _builtins
 from typing import Any, Optional
 
 from constants import CFG, Goods
@@ -120,6 +122,54 @@ def _log(text: str, style: str = "normal") -> None:
             game_log.pop(0)
 
 
+# ── print 拦截：将 game.py 的 print 输出导入 game_log ──────────────────
+_ansi_re = _re.compile(r'\x1b\[[0-9;]*m')
+_sep_re  = _re.compile(r'^[=\-─\s]+$')
+
+def _guess_style(text: str) -> Optional[str]:
+    """根据文本内容猜测日志样式；返回 None 表示跳过该行。"""
+    if _sep_re.match(text):
+        return None  # 纯分隔线，不显示
+    if any(k in text for k in ('成为港务长', '连任港务长', '第一任港务长')):
+        return 'header'
+    if any(k in text for k in ('⚠', '失败', '↩', '回滚')):
+        return 'warn'
+    if '出价' in text or '比索成为' in text or '放弃竞拍' in text:
+        return 'bid'
+    if ('购买' in text or '股票' in text) and '→' not in text:
+        return 'bid'
+    if '→' in text and any(k in text for k in ('港口', '造船厂', '航海家', '海盗', '保险', '槽', '位置')):
+        return 'deploy'
+    if '🎲' in text or '掷骰' in text:
+        return 'dice'
+    if any(k in text for k in ('利润', '槽位收入', '价格上涨', '净收益', '保险结算', '货物利润')):
+        return 'profit'
+    if '（AI）' in text or '🤖' in text:
+        return 'ai'
+    if any(k in text for k in ('🏴', '踢出', '驱逐', '海盗登上')):
+        return 'warn'
+    if any(k in text for k in ('── ', '结算', '出海', '游戏结束', '最终得分')):
+        return 'section'
+    return 'normal'
+
+_orig_print = _builtins.print
+
+def _gui_print(*args, sep=' ', end='\n', file=None, flush=False):
+    """拦截 print()，同时将内容写入 game_log。"""
+    _orig_print(*args, sep=sep, end=end, file=file, flush=flush)
+    if file is not None:
+        return  # 只拦截标准输出
+    text = _ansi_re.sub('', sep.join(str(a) for a in args)).strip()
+    if not text:
+        return
+    sty = _guess_style(text)
+    if sty is None:
+        return
+    _log(text, sty)
+
+_builtins.print = _gui_print
+
+# ── 内部工具 ────────────────────────────────────────────────────────────
 def _ctx(**kwargs) -> None:
     with _lock:
         game_context.update(kwargs)
@@ -223,16 +273,25 @@ def ask_bid(player_name: str, current_bid: int, min_bid: int, state_fn=None) -> 
         "current_bid": current_bid,
         "min_bid": min_bid,
     })
-    return val if isinstance(val, int) else 0
+    val = val if isinstance(val, int) else 0
+    if val <= 0:
+        _log(f'  ✗ {player_name} 放弃出价', 'ai')
+    else:
+        _log(f'  ✓ {player_name} 出价 ¥{val}', 'bid')
+    return val
 
 
 def ask_ship_placement(player_name: str, active_goods: list, n_ships: int) -> dict:
-    return _ask({
+    result = _ask({
         "type": "ship_placement",
         "player_name": player_name,
         "active_goods": list(active_goods),
         "n_ships": n_ships,
     })
+    if isinstance(result, dict):
+        pos_str = ', '.join(f'{_good_name(g)}={v}' for g, v in result.items())
+        _log(f'  ✓ {player_name} 设置出发位置: {pos_str}', 'section')
+    return result
 
 
 def ask_choose_goods(player_name: str, all_goods: list) -> list:
@@ -243,6 +302,7 @@ def ask_choose_goods(player_name: str, all_goods: list) -> list:
     })
     if not isinstance(excluded, Goods) or excluded not in all_goods:
         excluded = all_goods[-1]  # replay 错位时的保底
+    _log(f'  ✓ {player_name} 排除了 {_good_name(excluded)} 货物', 'section')
     return [g for g in all_goods if g != excluded]
 
 
@@ -253,7 +313,10 @@ def ask_buy_stock(player_name: str, market, player_money: int):
         "market": market,
         "player_money": player_money,
     })
-    return val if (val is None or isinstance(val, Goods)) else None
+    val = val if (val is None or isinstance(val, Goods)) else None
+    if val is None:
+        _log(f'  {player_name} 不购买股票', 'dim')
+    return val
 
 
 def ask_deploy_position(player_name: str, ships: dict, board,

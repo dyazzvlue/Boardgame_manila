@@ -17,7 +17,9 @@ GOODS_COLORS={Goods.nutmeg:(165,95,35),Goods.silk:(70,125,215),
               Goods.ginseng:(215,185,35),Goods.jade:(50,168,95)}
 PLAYER_COLORS_LIST=[(220,80,80),(80,125,220),(75,200,105),(180,80,200),(80,200,200)]
 LOG_STYLES={"normal":(200,200,210),"header":(218,175,55),"section":(100,185,230),
-            "good":(80,200,110),"warn":(220,80,80),"dim":(100,110,130)}
+            "good":(80,200,110),"warn":(220,80,80),"dim":(100,110,130),
+            "bid":(220,160,60),"deploy":(85,200,165),"ai":(140,150,200),
+            "dice":(185,120,225),"profit":(90,215,135)}
 
 _fc={}
 def _font(sz,bold=False):
@@ -50,7 +52,7 @@ class Button:
 class GameRenderer:
     W=1280;H=800;HEADER_H=52;ACTION_Y=610;ACTION_H=190
     LEFT_W=830;RIGHT_X=830;SHIPS_H=272;BOARD_Y=324;BOARD_H=286
-    MARKET_H=148;PLAYERS_Y=200;PLAYERS_H=250;LOG_Y=450;LOG_H=160
+    MARKET_H=148;PLAYERS_Y=200;PLAYERS_H=200;LOG_Y=400;LOG_H=210
 
     def __init__(self):
         self._buttons=[]; self._dialog_state={}
@@ -234,7 +236,7 @@ class GameRenderer:
         st=max(0,len(log)-vis-self._log_scroll); en=max(0,len(log)-self._log_scroll)
         for i,(txt,sty) in enumerate(log[st:en]):
             col=LOG_STYLES.get(sty,LOG_STYLES["normal"])
-            ts=_font(12).render(txt[:52],True,col); screen.blit(ts,(x0+8,y0+25+i*lh))
+            ts=_font(12).render(txt[:60],True,col); screen.blit(ts,(x0+8,y0+25+i*lh))
         screen.set_clip(None)
 
     def _draw_action_panel(self,screen,ctx,req,mouse):
