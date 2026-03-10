@@ -1,0 +1,68 @@
+{
+  "version": 1,
+  "players": [
+    {
+      "name": "玩家1",
+      "is_human": true
+    },
+    {
+      "name": "玩家2",
+      "is_human": false
+    },
+    {
+      "name": "玩家3",
+      "is_human": false
+    }
+  ],
+  "responses": [
+    [
+      "bid",
+      6
+    ],
+    [
+      "bid",
+      8
+    ],
+    [
+      "bid",
+      10
+    ],
+    [
+      "buy_stock",
+      {
+        "_G": "nutmeg"
+      }
+    ],
+    [
+      "choose_goods",
+      {
+        "_G": "nutmeg"
+      }
+    ],
+    [
+      "ship_placement",
+      {
+        "_D": [
+          [
+            {
+              "_G": "silk"
+            },
+            3
+          ],
+          [
+            {
+              "_G": "ginseng"
+            },
+            3
+          ],
+          [
+            {
+              "_G": "jade"
+            },
+            3
+          ]
+        ]
+      }
+    ]
+  ]
+}

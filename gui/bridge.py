@@ -5,6 +5,10 @@ gui/bridge.py — 线程安全 UI 桥接层，替换 ui.py 供 GUI 模式使用�
 from __future__ import annotations
 import queue
 import threading
+import json as _json
+import time as _time
+import os as _os
+import random as _random
 from typing import Any, Optional
 
 from constants import CFG, Goods
@@ -37,14 +41,65 @@ game_context: dict = {
 
 game_log: list = []
 _MAX_LOG = 400
+_RESET_TOKEN = object()  # sentinel: reset 信号，区别于 None 响应
+# ── 存档/回放 ──
+response_log: list = []
+_replay_mode: bool = False
+_replay_data: list = []
+_replay_idx: int = 0
+_game_seed: int = 0
+
+
+def set_game_seed(seed: int = None) -> int:
+    """生成并记录随机种子；replay 时传入存档的 seed。"""
+    global _game_seed
+    if seed is None:
+        seed = _random.randint(0, 2**31 - 1)
+    _game_seed = seed
+    return seed
+
+
+def _ser(v):
+    if v is None: return None
+    if isinstance(v, bool): return v
+    if isinstance(v, (int, float, str)): return v
+    if isinstance(v, Goods): return {"_G": v.value}
+    if isinstance(v, dict): return {"_D": [[_ser(k), _ser(val)] for k, val in v.items()]}
+    if isinstance(v, (list, tuple)): return {"_S": [_ser(i) for i in v], "_T": isinstance(v, tuple)}
+    return str(v)
+
+def _des(v):
+    if v is None: return None
+    if isinstance(v, bool): return v
+    if isinstance(v, (int, float, str)): return v
+    if isinstance(v, list): return [_des(i) for i in v]
+    if isinstance(v, dict):
+        if "_G" in v: return Goods(v["_G"])
+        if "_D" in v: return {_des(k): _des(val) for k, val in v["_D"]}
+        if "_S" in v:
+            items = [_des(i) for i in v["_S"]]
+            return tuple(items) if v.get("_T") else items
+    return v
 
 _req_q: queue.Queue = queue.Queue()
 _rsp_q: queue.Queue = queue.Queue()
 
 
 def _ask(data: dict) -> Any:
+    global _replay_idx, _replay_mode
+    rt = data.get("type", "")
+    if _replay_mode and _replay_idx < len(_replay_data):
+        _, raw = _replay_data[_replay_idx]
+        _replay_idx += 1
+        if _replay_idx >= len(_replay_data):
+            _replay_mode = False
+        return _des(raw)
     _req_q.put(data)
-    return _rsp_q.get()
+    val = _rsp_q.get()
+    if val is _RESET_TOKEN:
+        raise SystemExit  # 被 reset_bridge 终止，线程自然退出
+    response_log.append([rt, _ser(val)])
+    return val
 
 
 def respond(value: Any) -> None:
@@ -162,12 +217,13 @@ def ask_yes_no(prompt: str) -> bool:
 
 def ask_bid(player_name: str, current_bid: int, min_bid: int, state_fn=None) -> int:
     _log(f"  {player_name} 出价中...(当前最高 {current_bid})", "dim")
-    return _ask({
+    val = _ask({
         "type": "bid",
         "player_name": player_name,
         "current_bid": current_bid,
         "min_bid": min_bid,
     })
+    return val if isinstance(val, int) else 0
 
 
 def ask_ship_placement(player_name: str, active_goods: list, n_ships: int) -> dict:
@@ -185,16 +241,19 @@ def ask_choose_goods(player_name: str, all_goods: list) -> list:
         "player_name": player_name,
         "goods": list(all_goods),
     })
+    if not isinstance(excluded, Goods) or excluded not in all_goods:
+        excluded = all_goods[-1]  # replay 错位时的保底
     return [g for g in all_goods if g != excluded]
 
 
 def ask_buy_stock(player_name: str, market, player_money: int):
-    return _ask({
+    val = _ask({
         "type": "buy_stock",
         "player_name": player_name,
         "market": market,
         "player_money": player_money,
     })
+    return val if (val is None or isinstance(val, Goods)) else None
 
 
 def ask_deploy_position(player_name: str, ships: dict, board,
@@ -248,3 +307,50 @@ def ask_pirate_destination(pirate_player_name: str, target_good,
         "current_pos": current_pos,
         "track_len": track_len,
     })
+
+
+# ── 存档 / 读档 / 重置 ─────────────────────────────────────
+def save_game(players, path: str) -> None:
+    _os.makedirs(_os.path.dirname(_os.path.abspath(path)), exist_ok=True)
+    data = {"version": 1,
+            "seed": _game_seed,
+            "players": [{"name": p.name, "is_human": p.is_human} for p in players],
+            "responses": response_log[:]}
+    with open(path, "w", encoding="utf-8") as _f:
+        _json.dump(data, _f, ensure_ascii=False, indent=2)
+
+
+def load_game(path: str) -> dict:
+    with open(path, "r", encoding="utf-8") as _f:
+        return _json.load(_f)
+
+
+def start_replay(responses: list, seed: int = 0) -> None:
+    global _replay_mode, _replay_data, _replay_idx, _game_seed
+    _replay_mode = True
+    _replay_data = responses
+    _replay_idx = 0
+    if seed:
+        _game_seed = seed
+
+
+def reset_bridge() -> None:
+    global response_log, _replay_mode, _replay_data, _replay_idx
+    try: _rsp_q.put_nowait(_RESET_TOKEN)
+    except Exception: pass
+    _time.sleep(0.08)
+    while not _req_q.empty():
+        try: _req_q.get_nowait()
+        except Exception: pass
+    while not _rsp_q.empty():
+        try: _rsp_q.get_nowait()
+        except Exception: pass
+    response_log = []
+    _replay_mode = False
+    _replay_data = []
+    _replay_idx = 0
+    game_log.clear()
+    with _lock:
+        game_context.update({"market": None, "ships": {}, "board": None,
+                              "players": [], "active_goods": [],
+                              "phase": "等待开始...", "round_num": 0, "sub_round": None})
