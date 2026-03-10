@@ -1,0 +1,158 @@
+{
+  "game": {
+    "initial_money": 30,
+    "workers_by_player_count": {
+      "3": 4,
+      "4": 3,
+      "5": 3
+    },
+    "ship_start_sum": 9,
+    "ship_track_length": 13,
+    "price_step": 5,
+    "end_price": 30,
+    "min_stock_price": 5,
+    "loan_amount": 12,
+    "loan_redeem": 15
+  },
+  "goods": {
+    "nutmeg": {
+      "name": "肉豆蔻",
+      "color": "brown",
+      "slots": [
+        {
+          "cost": 4
+        },
+        {
+          "cost": 3
+        },
+        {
+          "cost": 2
+        }
+      ],
+      "cargo_value": 24
+    },
+    "silk": {
+      "name": "丝绸",
+      "color": "blue",
+      "slots": [
+        {
+          "cost": 3
+        },
+        {
+          "cost": 4
+        },
+        {
+          "cost": 5
+        }
+      ],
+      "cargo_value": 30
+    },
+    "ginseng": {
+      "name": "人参",
+      "color": "yellow",
+      "slots": [
+        {
+          "cost": 1
+        },
+        {
+          "cost": 2
+        },
+        {
+          "cost": 3
+        }
+      ],
+      "cargo_value": 18
+    },
+    "jade": {
+      "name": "玉",
+      "color": "green",
+      "slots": [
+        {
+          "cost": 3
+        },
+        {
+          "cost": 4
+        },
+        {
+          "cost": 5
+        },
+        {
+          "cost": 5
+        }
+      ],
+      "cargo_value": 36
+    }
+  },
+  "port": {
+    "slots": [
+      {
+        "label": "A",
+        "cost": 4,
+        "profit": 6
+      },
+      {
+        "label": "B",
+        "cost": 3,
+        "profit": 8
+      },
+      {
+        "label": "C",
+        "cost": 2,
+        "profit": 15
+      }
+    ]
+  },
+  "shipyard": {
+    "slots": [
+      {
+        "label": "A",
+        "cost": 4,
+        "profit": 6
+      },
+      {
+        "label": "B",
+        "cost": 3,
+        "profit": 8
+      },
+      {
+        "label": "C",
+        "cost": 2,
+        "profit": 15
+      }
+    ]
+  },
+  "pirate": {
+    "slots": [
+      {
+        "label": "captain",
+        "cost": 3
+      },
+      {
+        "label": "crew",
+        "cost": 2
+      }
+    ]
+  },
+  "navigator": {
+    "slots": [
+      {
+        "label": "big",
+        "cost": 5,
+        "move": 2
+      },
+      {
+        "label": "small",
+        "cost": 3,
+        "move": 1
+      }
+    ]
+  },
+  "insurance": {
+    "immediate_gain": 10
+  },
+  "stocks": {
+    "per_good_total": 5,
+    "initial_draw_per_good": 3,
+    "deal_per_player": 2
+  }
+}

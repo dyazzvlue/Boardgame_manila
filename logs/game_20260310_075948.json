@@ -1,0 +1,2360 @@
+[
+  {
+    "round": 1,
+    "sub_round": 0,
+    "player": "AI2",
+    "action": "出价",
+    "details": {
+      "bid": 1
+    },
+    "result": "",
+    "time": "07:59:48"
+  },
+  {
+    "round": 1,
+    "sub_round": 0,
+    "player": "AI3",
+    "action": "放弃竞拍",
+    "details": {},
+    "result": "",
+    "time": "07:59:48"
+  },
+  {
+    "round": 1,
+    "sub_round": 0,
+    "player": "AI2",
+    "action": "成为港务长",
+    "details": {
+      "cost": 1
+    },
+    "result": "",
+    "time": "07:59:48"
+  },
+  {
+    "round": 1,
+    "sub_round": 0,
+    "player": "AI2",
+    "action": "购买股票",
+    "details": {
+      "good": "silk"
+    },
+    "result": "花费5",
+    "time": "07:59:48"
+  },
+  {
+    "round": 1,
+    "sub_round": 0,
+    "player": "AI2",
+    "action": "设置出发位置",
+    "details": {
+      "silk": 3,
+      "ginseng": 3,
+      "jade": 3
+    },
+    "result": "",
+    "time": "07:59:48"
+  },
+  {
+    "round": 1,
+    "sub_round": 1,
+    "player": "AI3",
+    "action": "部署",
+    "details": {
+      "type": "port",
+      "slot": 2
+    },
+    "result": "花费2",
+    "time": "07:59:48"
+  },
+  {
+    "round": 1,
+    "sub_round": 1,
+    "player": "AI1",
+    "action": "部署",
+    "details": {
+      "type": "shipyard",
+      "slot": 2
+    },
+    "result": "花费2",
+    "time": "07:59:48"
+  },
+  {
+    "round": 1,
+    "sub_round": 1,
+    "player": "AI2",
+    "action": "部署",
+    "details": {
+      "type": "port",
+      "slot": 1
+    },
+    "result": "花费3",
+    "time": "07:59:48"
+  },
+  {
+    "round": 1,
+    "sub_round": 1,
+    "player": "AI3",
+    "action": "部署",
+    "details": {
+      "type": "shipyard",
+      "slot": 1
+    },
+    "result": "花费3",
+    "time": "07:59:48"
+  },
+  {
+    "round": 1,
+    "sub_round": 1,
+    "player": "AI1",
+    "action": "部署",
+    "details": {
+      "type": "insurance"
+    },
+    "result": "获得10",
+    "time": "07:59:48"
+  },
+  {
+    "round": 1,
+    "sub_round": 1,
+    "player": "AI2",
+    "action": "部署",
+    "details": {
+      "type": "port",
+      "slot": 0
+    },
+    "result": "花费4",
+    "time": "07:59:48"
+  },
+  {
+    "round": 1,
+    "sub_round": 1,
+    "player": "骰子",
+    "action": "掷骰",
+    "details": {
+      "good": "silk",
+      "roll": 3,
+      "new_pos": 6,
+      "overshot": false
+    },
+    "result": "",
+    "time": "07:59:48"
+  },
+  {
+    "round": 1,
+    "sub_round": 1,
+    "player": "骰子",
+    "action": "掷骰",
+    "details": {
+      "good": "ginseng",
+      "roll": 1,
+      "new_pos": 4,
+      "overshot": false
+    },
+    "result": "",
+    "time": "07:59:48"
+  },
+  {
+    "round": 1,
+    "sub_round": 1,
+    "player": "骰子",
+    "action": "掷骰",
+    "details": {
+      "good": "jade",
+      "roll": 4,
+      "new_pos": 7,
+      "overshot": false
+    },
+    "result": "",
+    "time": "07:59:48"
+  },
+  {
+    "round": 1,
+    "sub_round": 2,
+    "player": "AI3",
+    "action": "部署",
+    "details": {
+      "type": "shipyard",
+      "slot": 0
+    },
+    "result": "花费4",
+    "time": "07:59:48"
+  },
+  {
+    "round": 1,
+    "sub_round": 2,
+    "player": "AI1",
+    "action": "部署",
+    "details": {
+      "type": "ship",
+      "good": "ginseng",
+      "slot": 0
+    },
+    "result": "花费1",
+    "time": "07:59:48"
+  },
+  {
+    "round": 1,
+    "sub_round": 2,
+    "player": "AI2",
+    "action": "部署",
+    "details": {
+      "type": "ship",
+      "good": "silk",
+      "slot": 0
+    },
+    "result": "花费3",
+    "time": "07:59:48"
+  },
+  {
+    "round": 1,
+    "sub_round": 2,
+    "player": "骰子",
+    "action": "掷骰",
+    "details": {
+      "good": "silk",
+      "roll": 4,
+      "new_pos": 10,
+      "overshot": false
+    },
+    "result": "",
+    "time": "07:59:48"
+  },
+  {
+    "round": 1,
+    "sub_round": 2,
+    "player": "骰子",
+    "action": "掷骰",
+    "details": {
+      "good": "ginseng",
+      "roll": 5,
+      "new_pos": 9,
+      "overshot": false
+    },
+    "result": "",
+    "time": "07:59:48"
+  },
+  {
+    "round": 1,
+    "sub_round": 2,
+    "player": "骰子",
+    "action": "掷骰",
+    "details": {
+      "good": "jade",
+      "roll": 2,
+      "new_pos": 9,
+      "overshot": false
+    },
+    "result": "",
+    "time": "07:59:48"
+  },
+  {
+    "round": 1,
+    "sub_round": 3,
+    "player": "AI3",
+    "action": "部署",
+    "details": {
+      "type": "ship",
+      "good": "ginseng",
+      "slot": 1
+    },
+    "result": "花费2",
+    "time": "07:59:48"
+  },
+  {
+    "round": 1,
+    "sub_round": 3,
+    "player": "AI1",
+    "action": "部署",
+    "details": {
+      "type": "ship",
+      "good": "ginseng",
+      "slot": 2
+    },
+    "result": "花费3",
+    "time": "07:59:48"
+  },
+  {
+    "round": 1,
+    "sub_round": 3,
+    "player": "AI2",
+    "action": "部署",
+    "details": {
+      "type": "ship",
+      "good": "silk",
+      "slot": 1
+    },
+    "result": "花费4",
+    "time": "07:59:48"
+  },
+  {
+    "round": 1,
+    "sub_round": 3,
+    "player": "骰子",
+    "action": "掷骰",
+    "details": {
+      "good": "silk",
+      "roll": 3,
+      "new_pos": 13,
+      "overshot": false
+    },
+    "result": "",
+    "time": "07:59:48"
+  },
+  {
+    "round": 1,
+    "sub_round": 3,
+    "player": "骰子",
+    "action": "掷骰",
+    "details": {
+      "good": "ginseng",
+      "roll": 6,
+      "new_pos": 13,
+      "overshot": true
+    },
+    "result": "",
+    "time": "07:59:48"
+  },
+  {
+    "round": 1,
+    "sub_round": 3,
+    "player": "骰子",
+    "action": "掷骰",
+    "details": {
+      "good": "jade",
+      "roll": 5,
+      "new_pos": 13,
+      "overshot": true
+    },
+    "result": "",
+    "time": "07:59:48"
+  },
+  {
+    "round": 2,
+    "sub_round": 0,
+    "player": "AI1",
+    "action": "出价",
+    "details": {
+      "bid": 1
+    },
+    "result": "",
+    "time": "07:59:48"
+  },
+  {
+    "round": 2,
+    "sub_round": 0,
+    "player": "AI2",
+    "action": "放弃竞拍",
+    "details": {},
+    "result": "",
+    "time": "07:59:48"
+  },
+  {
+    "round": 2,
+    "sub_round": 0,
+    "player": "AI1",
+    "action": "成为港务长",
+    "details": {
+      "cost": 1
+    },
+    "result": "",
+    "time": "07:59:48"
+  },
+  {
+    "round": 2,
+    "sub_round": 0,
+    "player": "AI1",
+    "action": "不购买股票",
+    "details": {},
+    "result": "",
+    "time": "07:59:48"
+  },
+  {
+    "round": 2,
+    "sub_round": 0,
+    "player": "AI1",
+    "action": "设置出发位置",
+    "details": {
+      "nutmeg": 3,
+      "ginseng": 3,
+      "jade": 3
+    },
+    "result": "",
+    "time": "07:59:48"
+  },
+  {
+    "round": 2,
+    "sub_round": 1,
+    "player": "AI2",
+    "action": "部署",
+    "details": {
+      "type": "port",
+      "slot": 2
+    },
+    "result": "花费2",
+    "time": "07:59:48"
+  },
+  {
+    "round": 2,
+    "sub_round": 1,
+    "player": "AI3",
+    "action": "部署",
+    "details": {
+      "type": "shipyard",
+      "slot": 2
+    },
+    "result": "花费2",
+    "time": "07:59:48"
+  },
+  {
+    "round": 2,
+    "sub_round": 1,
+    "player": "AI1",
+    "action": "部署",
+    "details": {
+      "type": "port",
+      "slot": 1
+    },
+    "result": "花费3",
+    "time": "07:59:48"
+  },
+  {
+    "round": 2,
+    "sub_round": 1,
+    "player": "AI2",
+    "action": "部署",
+    "details": {
+      "type": "ship",
+      "good": "ginseng",
+      "slot": 0
+    },
+    "result": "花费1",
+    "time": "07:59:48"
+  },
+  {
+    "round": 2,
+    "sub_round": 1,
+    "player": "AI3",
+    "action": "部署",
+    "details": {
+      "type": "shipyard",
+      "slot": 1
+    },
+    "result": "花费3",
+    "time": "07:59:48"
+  },
+  {
+    "round": 2,
+    "sub_round": 1,
+    "player": "AI1",
+    "action": "部署",
+    "details": {
+      "type": "insurance"
+    },
+    "result": "获得10",
+    "time": "07:59:48"
+  },
+  {
+    "round": 2,
+    "sub_round": 1,
+    "player": "骰子",
+    "action": "掷骰",
+    "details": {
+      "good": "nutmeg",
+      "roll": 3,
+      "new_pos": 6,
+      "overshot": false
+    },
+    "result": "",
+    "time": "07:59:48"
+  },
+  {
+    "round": 2,
+    "sub_round": 1,
+    "player": "骰子",
+    "action": "掷骰",
+    "details": {
+      "good": "ginseng",
+      "roll": 2,
+      "new_pos": 5,
+      "overshot": false
+    },
+    "result": "",
+    "time": "07:59:48"
+  },
+  {
+    "round": 2,
+    "sub_round": 1,
+    "player": "骰子",
+    "action": "掷骰",
+    "details": {
+      "good": "jade",
+      "roll": 3,
+      "new_pos": 6,
+      "overshot": false
+    },
+    "result": "",
+    "time": "07:59:48"
+  },
+  {
+    "round": 2,
+    "sub_round": 2,
+    "player": "AI2",
+    "action": "部署",
+    "details": {
+      "type": "ship",
+      "good": "ginseng",
+      "slot": 1
+    },
+    "result": "花费2",
+    "time": "07:59:48"
+  },
+  {
+    "round": 2,
+    "sub_round": 2,
+    "player": "AI3",
+    "action": "部署",
+    "details": {
+      "type": "ship",
+      "good": "jade",
+      "slot": 0
+    },
+    "result": "花费3",
+    "time": "07:59:48"
+  },
+  {
+    "round": 2,
+    "sub_round": 2,
+    "player": "AI1",
+    "action": "部署",
+    "details": {
+      "type": "ship",
+      "good": "nutmeg",
+      "slot": 2
+    },
+    "result": "花费2",
+    "time": "07:59:48"
+  },
+  {
+    "round": 2,
+    "sub_round": 2,
+    "player": "骰子",
+    "action": "掷骰",
+    "details": {
+      "good": "nutmeg",
+      "roll": 6,
+      "new_pos": 12,
+      "overshot": false
+    },
+    "result": "",
+    "time": "07:59:48"
+  },
+  {
+    "round": 2,
+    "sub_round": 2,
+    "player": "骰子",
+    "action": "掷骰",
+    "details": {
+      "good": "ginseng",
+      "roll": 6,
+      "new_pos": 11,
+      "overshot": false
+    },
+    "result": "",
+    "time": "07:59:48"
+  },
+  {
+    "round": 2,
+    "sub_round": 2,
+    "player": "骰子",
+    "action": "掷骰",
+    "details": {
+      "good": "jade",
+      "roll": 1,
+      "new_pos": 7,
+      "overshot": false
+    },
+    "result": "",
+    "time": "07:59:48"
+  },
+  {
+    "round": 2,
+    "sub_round": 3,
+    "player": "AI2",
+    "action": "部署",
+    "details": {
+      "type": "port",
+      "slot": 0
+    },
+    "result": "花费4",
+    "time": "07:59:48"
+  },
+  {
+    "round": 2,
+    "sub_round": 3,
+    "player": "AI3",
+    "action": "部署",
+    "details": {
+      "type": "shipyard",
+      "slot": 0
+    },
+    "result": "花费4",
+    "time": "07:59:48"
+  },
+  {
+    "round": 2,
+    "sub_round": 3,
+    "player": "AI1",
+    "action": "部署",
+    "details": {
+      "type": "ship",
+      "good": "nutmeg",
+      "slot": 1
+    },
+    "result": "花费3",
+    "time": "07:59:48"
+  },
+  {
+    "round": 2,
+    "sub_round": 3,
+    "player": "骰子",
+    "action": "掷骰",
+    "details": {
+      "good": "nutmeg",
+      "roll": 4,
+      "new_pos": 13,
+      "overshot": true
+    },
+    "result": "",
+    "time": "07:59:48"
+  },
+  {
+    "round": 2,
+    "sub_round": 3,
+    "player": "骰子",
+    "action": "掷骰",
+    "details": {
+      "good": "ginseng",
+      "roll": 5,
+      "new_pos": 13,
+      "overshot": true
+    },
+    "result": "",
+    "time": "07:59:48"
+  },
+  {
+    "round": 2,
+    "sub_round": 3,
+    "player": "骰子",
+    "action": "掷骰",
+    "details": {
+      "good": "jade",
+      "roll": 6,
+      "new_pos": 13,
+      "overshot": false
+    },
+    "result": "",
+    "time": "07:59:48"
+  },
+  {
+    "round": 3,
+    "sub_round": 0,
+    "player": "AI3",
+    "action": "出价",
+    "details": {
+      "bid": 1
+    },
+    "result": "",
+    "time": "07:59:48"
+  },
+  {
+    "round": 3,
+    "sub_round": 0,
+    "player": "AI1",
+    "action": "出价",
+    "details": {
+      "bid": 2
+    },
+    "result": "",
+    "time": "07:59:48"
+  },
+  {
+    "round": 3,
+    "sub_round": 0,
+    "player": "AI3",
+    "action": "出价",
+    "details": {
+      "bid": 3
+    },
+    "result": "",
+    "time": "07:59:48"
+  },
+  {
+    "round": 3,
+    "sub_round": 0,
+    "player": "AI1",
+    "action": "出价",
+    "details": {
+      "bid": 4
+    },
+    "result": "",
+    "time": "07:59:48"
+  },
+  {
+    "round": 3,
+    "sub_round": 0,
+    "player": "AI3",
+    "action": "放弃竞拍",
+    "details": {},
+    "result": "",
+    "time": "07:59:48"
+  },
+  {
+    "round": 3,
+    "sub_round": 0,
+    "player": "AI1",
+    "action": "成为港务长",
+    "details": {
+      "cost": 4
+    },
+    "result": "",
+    "time": "07:59:48"
+  },
+  {
+    "round": 3,
+    "sub_round": 0,
+    "player": "AI1",
+    "action": "不购买股票",
+    "details": {},
+    "result": "",
+    "time": "07:59:48"
+  },
+  {
+    "round": 3,
+    "sub_round": 0,
+    "player": "AI1",
+    "action": "设置出发位置",
+    "details": {
+      "nutmeg": 3,
+      "ginseng": 3,
+      "jade": 3
+    },
+    "result": "",
+    "time": "07:59:48"
+  },
+  {
+    "round": 3,
+    "sub_round": 1,
+    "player": "AI2",
+    "action": "部署",
+    "details": {
+      "type": "port",
+      "slot": 2
+    },
+    "result": "花费2",
+    "time": "07:59:48"
+  },
+  {
+    "round": 3,
+    "sub_round": 1,
+    "player": "AI3",
+    "action": "部署",
+    "details": {
+      "type": "shipyard",
+      "slot": 2
+    },
+    "result": "花费2",
+    "time": "07:59:48"
+  },
+  {
+    "round": 3,
+    "sub_round": 1,
+    "player": "AI1",
+    "action": "部署",
+    "details": {
+      "type": "ship",
+      "good": "ginseng",
+      "slot": 0
+    },
+    "result": "花费1",
+    "time": "07:59:48"
+  },
+  {
+    "round": 3,
+    "sub_round": 1,
+    "player": "AI2",
+    "action": "部署",
+    "details": {
+      "type": "ship",
+      "good": "jade",
+      "slot": 0
+    },
+    "result": "花费3",
+    "time": "07:59:48"
+  },
+  {
+    "round": 3,
+    "sub_round": 1,
+    "player": "AI3",
+    "action": "部署",
+    "details": {
+      "type": "ship",
+      "good": "ginseng",
+      "slot": 1
+    },
+    "result": "花费2",
+    "time": "07:59:48"
+  },
+  {
+    "round": 3,
+    "sub_round": 1,
+    "player": "AI1",
+    "action": "部署",
+    "details": {
+      "type": "ship",
+      "good": "nutmeg",
+      "slot": 2
+    },
+    "result": "花费2",
+    "time": "07:59:48"
+  },
+  {
+    "round": 3,
+    "sub_round": 1,
+    "player": "骰子",
+    "action": "掷骰",
+    "details": {
+      "good": "nutmeg",
+      "roll": 2,
+      "new_pos": 5,
+      "overshot": false
+    },
+    "result": "",
+    "time": "07:59:48"
+  },
+  {
+    "round": 3,
+    "sub_round": 1,
+    "player": "骰子",
+    "action": "掷骰",
+    "details": {
+      "good": "ginseng",
+      "roll": 3,
+      "new_pos": 6,
+      "overshot": false
+    },
+    "result": "",
+    "time": "07:59:48"
+  },
+  {
+    "round": 3,
+    "sub_round": 1,
+    "player": "骰子",
+    "action": "掷骰",
+    "details": {
+      "good": "jade",
+      "roll": 2,
+      "new_pos": 5,
+      "overshot": false
+    },
+    "result": "",
+    "time": "07:59:48"
+  },
+  {
+    "round": 3,
+    "sub_round": 2,
+    "player": "AI2",
+    "action": "部署",
+    "details": {
+      "type": "port",
+      "slot": 1
+    },
+    "result": "花费3",
+    "time": "07:59:48"
+  },
+  {
+    "round": 3,
+    "sub_round": 2,
+    "player": "AI3",
+    "action": "部署",
+    "details": {
+      "type": "shipyard",
+      "slot": 1
+    },
+    "result": "花费3",
+    "time": "07:59:48"
+  },
+  {
+    "round": 3,
+    "sub_round": 2,
+    "player": "AI1",
+    "action": "部署",
+    "details": {
+      "type": "insurance"
+    },
+    "result": "获得10",
+    "time": "07:59:48"
+  },
+  {
+    "round": 3,
+    "sub_round": 2,
+    "player": "骰子",
+    "action": "掷骰",
+    "details": {
+      "good": "nutmeg",
+      "roll": 3,
+      "new_pos": 8,
+      "overshot": false
+    },
+    "result": "",
+    "time": "07:59:48"
+  },
+  {
+    "round": 3,
+    "sub_round": 2,
+    "player": "骰子",
+    "action": "掷骰",
+    "details": {
+      "good": "ginseng",
+      "roll": 2,
+      "new_pos": 8,
+      "overshot": false
+    },
+    "result": "",
+    "time": "07:59:48"
+  },
+  {
+    "round": 3,
+    "sub_round": 2,
+    "player": "骰子",
+    "action": "掷骰",
+    "details": {
+      "good": "jade",
+      "roll": 4,
+      "new_pos": 9,
+      "overshot": false
+    },
+    "result": "",
+    "time": "07:59:48"
+  },
+  {
+    "round": 3,
+    "sub_round": 3,
+    "player": "AI2",
+    "action": "部署",
+    "details": {
+      "type": "ship",
+      "good": "ginseng",
+      "slot": 2
+    },
+    "result": "花费3",
+    "time": "07:59:48"
+  },
+  {
+    "round": 3,
+    "sub_round": 3,
+    "player": "AI3",
+    "action": "部署",
+    "details": {
+      "type": "ship",
+      "good": "jade",
+      "slot": 1
+    },
+    "result": "花费4",
+    "time": "07:59:48"
+  },
+  {
+    "round": 3,
+    "sub_round": 3,
+    "player": "AI1",
+    "action": "部署",
+    "details": {
+      "type": "ship",
+      "good": "nutmeg",
+      "slot": 1
+    },
+    "result": "花费3",
+    "time": "07:59:48"
+  },
+  {
+    "round": 3,
+    "sub_round": 3,
+    "player": "骰子",
+    "action": "掷骰",
+    "details": {
+      "good": "nutmeg",
+      "roll": 2,
+      "new_pos": 10,
+      "overshot": false
+    },
+    "result": "",
+    "time": "07:59:48"
+  },
+  {
+    "round": 3,
+    "sub_round": 3,
+    "player": "骰子",
+    "action": "掷骰",
+    "details": {
+      "good": "ginseng",
+      "roll": 5,
+      "new_pos": 13,
+      "overshot": false
+    },
+    "result": "",
+    "time": "07:59:48"
+  },
+  {
+    "round": 3,
+    "sub_round": 3,
+    "player": "骰子",
+    "action": "掷骰",
+    "details": {
+      "good": "jade",
+      "roll": 4,
+      "new_pos": 13,
+      "overshot": false
+    },
+    "result": "",
+    "time": "07:59:48"
+  },
+  {
+    "round": 4,
+    "sub_round": 0,
+    "player": "AI3",
+    "action": "出价",
+    "details": {
+      "bid": 1
+    },
+    "result": "",
+    "time": "07:59:48"
+  },
+  {
+    "round": 4,
+    "sub_round": 0,
+    "player": "AI1",
+    "action": "出价",
+    "details": {
+      "bid": 2
+    },
+    "result": "",
+    "time": "07:59:48"
+  },
+  {
+    "round": 4,
+    "sub_round": 0,
+    "player": "AI3",
+    "action": "出价",
+    "details": {
+      "bid": 3
+    },
+    "result": "",
+    "time": "07:59:48"
+  },
+  {
+    "round": 4,
+    "sub_round": 0,
+    "player": "AI1",
+    "action": "出价",
+    "details": {
+      "bid": 4
+    },
+    "result": "",
+    "time": "07:59:48"
+  },
+  {
+    "round": 4,
+    "sub_round": 0,
+    "player": "AI3",
+    "action": "出价",
+    "details": {
+      "bid": 5
+    },
+    "result": "",
+    "time": "07:59:48"
+  },
+  {
+    "round": 4,
+    "sub_round": 0,
+    "player": "AI1",
+    "action": "放弃竞拍",
+    "details": {},
+    "result": "",
+    "time": "07:59:48"
+  },
+  {
+    "round": 4,
+    "sub_round": 0,
+    "player": "AI3",
+    "action": "成为港务长",
+    "details": {
+      "cost": 5
+    },
+    "result": "",
+    "time": "07:59:48"
+  },
+  {
+    "round": 4,
+    "sub_round": 0,
+    "player": "AI3",
+    "action": "购买股票",
+    "details": {
+      "good": "ginseng"
+    },
+    "result": "花费15",
+    "time": "07:59:48"
+  },
+  {
+    "round": 4,
+    "sub_round": 0,
+    "player": "AI3",
+    "action": "设置出发位置",
+    "details": {
+      "silk": 3,
+      "ginseng": 3,
+      "jade": 3
+    },
+    "result": "",
+    "time": "07:59:48"
+  },
+  {
+    "round": 4,
+    "sub_round": 1,
+    "player": "AI1",
+    "action": "部署",
+    "details": {
+      "type": "ship",
+      "good": "ginseng",
+      "slot": 0
+    },
+    "result": "花费1",
+    "time": "07:59:48"
+  },
+  {
+    "round": 4,
+    "sub_round": 1,
+    "player": "AI2",
+    "action": "部署",
+    "details": {
+      "type": "port",
+      "slot": 2
+    },
+    "result": "花费2",
+    "time": "07:59:48"
+  },
+  {
+    "round": 4,
+    "sub_round": 1,
+    "player": "AI3",
+    "action": "部署",
+    "details": {
+      "type": "ship",
+      "good": "jade",
+      "slot": 0
+    },
+    "result": "花费3",
+    "time": "07:59:48"
+  },
+  {
+    "round": 4,
+    "sub_round": 1,
+    "player": "AI1",
+    "action": "部署",
+    "details": {
+      "type": "shipyard",
+      "slot": 2
+    },
+    "result": "花费2",
+    "time": "07:59:48"
+  },
+  {
+    "round": 4,
+    "sub_round": 1,
+    "player": "AI2",
+    "action": "部署",
+    "details": {
+      "type": "ship",
+      "good": "ginseng",
+      "slot": 1
+    },
+    "result": "花费2",
+    "time": "07:59:48"
+  },
+  {
+    "round": 4,
+    "sub_round": 1,
+    "player": "AI3",
+    "action": "部署",
+    "details": {
+      "type": "ship",
+      "good": "ginseng",
+      "slot": 2
+    },
+    "result": "花费3",
+    "time": "07:59:48"
+  },
+  {
+    "round": 4,
+    "sub_round": 1,
+    "player": "骰子",
+    "action": "掷骰",
+    "details": {
+      "good": "silk",
+      "roll": 1,
+      "new_pos": 4,
+      "overshot": false
+    },
+    "result": "",
+    "time": "07:59:48"
+  },
+  {
+    "round": 4,
+    "sub_round": 1,
+    "player": "骰子",
+    "action": "掷骰",
+    "details": {
+      "good": "ginseng",
+      "roll": 4,
+      "new_pos": 7,
+      "overshot": false
+    },
+    "result": "",
+    "time": "07:59:48"
+  },
+  {
+    "round": 4,
+    "sub_round": 1,
+    "player": "骰子",
+    "action": "掷骰",
+    "details": {
+      "good": "jade",
+      "roll": 3,
+      "new_pos": 6,
+      "overshot": false
+    },
+    "result": "",
+    "time": "07:59:48"
+  },
+  {
+    "round": 4,
+    "sub_round": 2,
+    "player": "AI1",
+    "action": "部署",
+    "details": {
+      "type": "port",
+      "slot": 1
+    },
+    "result": "花费3",
+    "time": "07:59:48"
+  },
+  {
+    "round": 4,
+    "sub_round": 2,
+    "player": "AI2",
+    "action": "部署",
+    "details": {
+      "type": "ship",
+      "good": "silk",
+      "slot": 0
+    },
+    "result": "花费3",
+    "time": "07:59:48"
+  },
+  {
+    "round": 4,
+    "sub_round": 2,
+    "player": "AI3",
+    "action": "部署",
+    "details": {
+      "type": "ship",
+      "good": "jade",
+      "slot": 1
+    },
+    "result": "花费4",
+    "time": "07:59:48"
+  },
+  {
+    "round": 4,
+    "sub_round": 2,
+    "player": "骰子",
+    "action": "掷骰",
+    "details": {
+      "good": "silk",
+      "roll": 5,
+      "new_pos": 9,
+      "overshot": false
+    },
+    "result": "",
+    "time": "07:59:48"
+  },
+  {
+    "round": 4,
+    "sub_round": 2,
+    "player": "骰子",
+    "action": "掷骰",
+    "details": {
+      "good": "ginseng",
+      "roll": 2,
+      "new_pos": 9,
+      "overshot": false
+    },
+    "result": "",
+    "time": "07:59:48"
+  },
+  {
+    "round": 4,
+    "sub_round": 2,
+    "player": "骰子",
+    "action": "掷骰",
+    "details": {
+      "good": "jade",
+      "roll": 3,
+      "new_pos": 9,
+      "overshot": false
+    },
+    "result": "",
+    "time": "07:59:48"
+  },
+  {
+    "round": 4,
+    "sub_round": 3,
+    "player": "AI1",
+    "action": "部署",
+    "details": {
+      "type": "shipyard",
+      "slot": 1
+    },
+    "result": "花费3",
+    "time": "07:59:48"
+  },
+  {
+    "round": 4,
+    "sub_round": 3,
+    "player": "AI2",
+    "action": "部署",
+    "details": {
+      "type": "insurance"
+    },
+    "result": "获得10",
+    "time": "07:59:48"
+  },
+  {
+    "round": 4,
+    "sub_round": 3,
+    "player": "AI3",
+    "action": "部署",
+    "details": {
+      "type": "ship",
+      "good": "jade",
+      "slot": 2
+    },
+    "result": "花费5",
+    "time": "07:59:48"
+  },
+  {
+    "round": 4,
+    "sub_round": 3,
+    "player": "骰子",
+    "action": "掷骰",
+    "details": {
+      "good": "silk",
+      "roll": 1,
+      "new_pos": 10,
+      "overshot": false
+    },
+    "result": "",
+    "time": "07:59:48"
+  },
+  {
+    "round": 4,
+    "sub_round": 3,
+    "player": "骰子",
+    "action": "掷骰",
+    "details": {
+      "good": "ginseng",
+      "roll": 3,
+      "new_pos": 12,
+      "overshot": false
+    },
+    "result": "",
+    "time": "07:59:48"
+  },
+  {
+    "round": 4,
+    "sub_round": 3,
+    "player": "骰子",
+    "action": "掷骰",
+    "details": {
+      "good": "jade",
+      "roll": 3,
+      "new_pos": 12,
+      "overshot": false
+    },
+    "result": "",
+    "time": "07:59:48"
+  },
+  {
+    "round": 5,
+    "sub_round": 0,
+    "player": "AI2",
+    "action": "出价",
+    "details": {
+      "bid": 1
+    },
+    "result": "",
+    "time": "07:59:48"
+  },
+  {
+    "round": 5,
+    "sub_round": 0,
+    "player": "AI3",
+    "action": "放弃竞拍",
+    "details": {},
+    "result": "",
+    "time": "07:59:48"
+  },
+  {
+    "round": 5,
+    "sub_round": 0,
+    "player": "AI2",
+    "action": "成为港务长",
+    "details": {
+      "cost": 1
+    },
+    "result": "",
+    "time": "07:59:48"
+  },
+  {
+    "round": 5,
+    "sub_round": 0,
+    "player": "AI2",
+    "action": "不购买股票",
+    "details": {},
+    "result": "",
+    "time": "07:59:48"
+  },
+  {
+    "round": 5,
+    "sub_round": 0,
+    "player": "AI2",
+    "action": "设置出发位置",
+    "details": {
+      "silk": 3,
+      "ginseng": 3,
+      "jade": 3
+    },
+    "result": "",
+    "time": "07:59:48"
+  },
+  {
+    "round": 5,
+    "sub_round": 1,
+    "player": "AI3",
+    "action": "部署",
+    "details": {
+      "type": "ship",
+      "good": "ginseng",
+      "slot": 0
+    },
+    "result": "花费1",
+    "time": "07:59:48"
+  },
+  {
+    "round": 5,
+    "sub_round": 1,
+    "player": "AI1",
+    "action": "部署",
+    "details": {
+      "type": "port",
+      "slot": 2
+    },
+    "result": "花费2",
+    "time": "07:59:48"
+  },
+  {
+    "round": 5,
+    "sub_round": 1,
+    "player": "AI2",
+    "action": "部署",
+    "details": {
+      "type": "shipyard",
+      "slot": 2
+    },
+    "result": "花费2",
+    "time": "07:59:48"
+  },
+  {
+    "round": 5,
+    "sub_round": 1,
+    "player": "AI3",
+    "action": "部署",
+    "details": {
+      "type": "ship",
+      "good": "jade",
+      "slot": 0
+    },
+    "result": "花费3",
+    "time": "07:59:48"
+  },
+  {
+    "round": 5,
+    "sub_round": 1,
+    "player": "AI1",
+    "action": "部署",
+    "details": {
+      "type": "ship",
+      "good": "ginseng",
+      "slot": 1
+    },
+    "result": "花费2",
+    "time": "07:59:48"
+  },
+  {
+    "round": 5,
+    "sub_round": 1,
+    "player": "AI2",
+    "action": "部署",
+    "details": {
+      "type": "ship",
+      "good": "silk",
+      "slot": 0
+    },
+    "result": "花费3",
+    "time": "07:59:48"
+  },
+  {
+    "round": 5,
+    "sub_round": 1,
+    "player": "骰子",
+    "action": "掷骰",
+    "details": {
+      "good": "silk",
+      "roll": 2,
+      "new_pos": 5,
+      "overshot": false
+    },
+    "result": "",
+    "time": "07:59:48"
+  },
+  {
+    "round": 5,
+    "sub_round": 1,
+    "player": "骰子",
+    "action": "掷骰",
+    "details": {
+      "good": "ginseng",
+      "roll": 2,
+      "new_pos": 5,
+      "overshot": false
+    },
+    "result": "",
+    "time": "07:59:48"
+  },
+  {
+    "round": 5,
+    "sub_round": 1,
+    "player": "骰子",
+    "action": "掷骰",
+    "details": {
+      "good": "jade",
+      "roll": 6,
+      "new_pos": 9,
+      "overshot": false
+    },
+    "result": "",
+    "time": "07:59:48"
+  },
+  {
+    "round": 5,
+    "sub_round": 2,
+    "player": "AI3",
+    "action": "部署",
+    "details": {
+      "type": "ship",
+      "good": "ginseng",
+      "slot": 2
+    },
+    "result": "花费3",
+    "time": "07:59:48"
+  },
+  {
+    "round": 5,
+    "sub_round": 2,
+    "player": "AI1",
+    "action": "部署",
+    "details": {
+      "type": "port",
+      "slot": 1
+    },
+    "result": "花费3",
+    "time": "07:59:48"
+  },
+  {
+    "round": 5,
+    "sub_round": 2,
+    "player": "AI2",
+    "action": "部署",
+    "details": {
+      "type": "shipyard",
+      "slot": 1
+    },
+    "result": "花费3",
+    "time": "07:59:48"
+  },
+  {
+    "round": 5,
+    "sub_round": 2,
+    "player": "骰子",
+    "action": "掷骰",
+    "details": {
+      "good": "silk",
+      "roll": 4,
+      "new_pos": 9,
+      "overshot": false
+    },
+    "result": "",
+    "time": "07:59:48"
+  },
+  {
+    "round": 5,
+    "sub_round": 2,
+    "player": "骰子",
+    "action": "掷骰",
+    "details": {
+      "good": "ginseng",
+      "roll": 6,
+      "new_pos": 11,
+      "overshot": false
+    },
+    "result": "",
+    "time": "07:59:48"
+  },
+  {
+    "round": 5,
+    "sub_round": 2,
+    "player": "骰子",
+    "action": "掷骰",
+    "details": {
+      "good": "jade",
+      "roll": 6,
+      "new_pos": 13,
+      "overshot": true
+    },
+    "result": "",
+    "time": "07:59:48"
+  },
+  {
+    "round": 5,
+    "sub_round": 3,
+    "player": "AI3",
+    "action": "部署",
+    "details": {
+      "type": "ship",
+      "good": "jade",
+      "slot": 1
+    },
+    "result": "花费4",
+    "time": "07:59:48"
+  },
+  {
+    "round": 5,
+    "sub_round": 3,
+    "player": "AI1",
+    "action": "部署",
+    "details": {
+      "type": "insurance"
+    },
+    "result": "获得10",
+    "time": "07:59:48"
+  },
+  {
+    "round": 5,
+    "sub_round": 3,
+    "player": "AI2",
+    "action": "部署",
+    "details": {
+      "type": "ship",
+      "good": "silk",
+      "slot": 1
+    },
+    "result": "花费4",
+    "time": "07:59:48"
+  },
+  {
+    "round": 5,
+    "sub_round": 3,
+    "player": "骰子",
+    "action": "掷骰",
+    "details": {
+      "good": "silk",
+      "roll": 1,
+      "new_pos": 10,
+      "overshot": false
+    },
+    "result": "",
+    "time": "07:59:48"
+  },
+  {
+    "round": 5,
+    "sub_round": 3,
+    "player": "骰子",
+    "action": "掷骰",
+    "details": {
+      "good": "ginseng",
+      "roll": 5,
+      "new_pos": 13,
+      "overshot": true
+    },
+    "result": "",
+    "time": "07:59:48"
+  },
+  {
+    "round": 6,
+    "sub_round": 0,
+    "player": "AI1",
+    "action": "放弃竞拍",
+    "details": {},
+    "result": "",
+    "time": "07:59:48"
+  },
+  {
+    "round": 6,
+    "sub_round": 0,
+    "player": "AI2",
+    "action": "出价",
+    "details": {
+      "bid": 1
+    },
+    "result": "",
+    "time": "07:59:48"
+  },
+  {
+    "round": 6,
+    "sub_round": 0,
+    "player": "AI2",
+    "action": "成为港务长",
+    "details": {
+      "cost": 1
+    },
+    "result": "",
+    "time": "07:59:48"
+  },
+  {
+    "round": 6,
+    "sub_round": 0,
+    "player": "AI2",
+    "action": "购买股票",
+    "details": {
+      "good": "ginseng"
+    },
+    "result": "花费20",
+    "time": "07:59:48"
+  },
+  {
+    "round": 6,
+    "sub_round": 0,
+    "player": "AI2",
+    "action": "设置出发位置",
+    "details": {
+      "silk": 3,
+      "ginseng": 3,
+      "jade": 3
+    },
+    "result": "",
+    "time": "07:59:48"
+  },
+  {
+    "round": 6,
+    "sub_round": 1,
+    "player": "AI3",
+    "action": "部署",
+    "details": {
+      "type": "ship",
+      "good": "ginseng",
+      "slot": 0
+    },
+    "result": "花费1",
+    "time": "07:59:48"
+  },
+  {
+    "round": 6,
+    "sub_round": 1,
+    "player": "AI1",
+    "action": "部署",
+    "details": {
+      "type": "ship",
+      "good": "jade",
+      "slot": 0
+    },
+    "result": "花费3",
+    "time": "07:59:48"
+  },
+  {
+    "round": 6,
+    "sub_round": 1,
+    "player": "AI2",
+    "action": "部署",
+    "details": {
+      "type": "port",
+      "slot": 2
+    },
+    "result": "花费2",
+    "time": "07:59:48"
+  },
+  {
+    "round": 6,
+    "sub_round": 1,
+    "player": "AI3",
+    "action": "部署",
+    "details": {
+      "type": "shipyard",
+      "slot": 2
+    },
+    "result": "花费2",
+    "time": "07:59:48"
+  },
+  {
+    "round": 6,
+    "sub_round": 1,
+    "player": "AI1",
+    "action": "部署",
+    "details": {
+      "type": "ship",
+      "good": "ginseng",
+      "slot": 1
+    },
+    "result": "花费2",
+    "time": "07:59:48"
+  },
+  {
+    "round": 6,
+    "sub_round": 1,
+    "player": "AI2",
+    "action": "部署",
+    "details": {
+      "type": "ship",
+      "good": "ginseng",
+      "slot": 2
+    },
+    "result": "花费3",
+    "time": "07:59:48"
+  },
+  {
+    "round": 6,
+    "sub_round": 1,
+    "player": "骰子",
+    "action": "掷骰",
+    "details": {
+      "good": "silk",
+      "roll": 1,
+      "new_pos": 4,
+      "overshot": false
+    },
+    "result": "",
+    "time": "07:59:48"
+  },
+  {
+    "round": 6,
+    "sub_round": 1,
+    "player": "骰子",
+    "action": "掷骰",
+    "details": {
+      "good": "ginseng",
+      "roll": 5,
+      "new_pos": 8,
+      "overshot": false
+    },
+    "result": "",
+    "time": "07:59:48"
+  },
+  {
+    "round": 6,
+    "sub_round": 1,
+    "player": "骰子",
+    "action": "掷骰",
+    "details": {
+      "good": "jade",
+      "roll": 5,
+      "new_pos": 8,
+      "overshot": false
+    },
+    "result": "",
+    "time": "07:59:48"
+  },
+  {
+    "round": 6,
+    "sub_round": 2,
+    "player": "AI3",
+    "action": "部署",
+    "details": {
+      "type": "ship",
+      "good": "jade",
+      "slot": 1
+    },
+    "result": "花费4",
+    "time": "07:59:48"
+  },
+  {
+    "round": 6,
+    "sub_round": 2,
+    "player": "AI1",
+    "action": "部署",
+    "details": {
+      "type": "port",
+      "slot": 1
+    },
+    "result": "花费3",
+    "time": "07:59:48"
+  },
+  {
+    "round": 6,
+    "sub_round": 2,
+    "player": "AI2",
+    "action": "部署",
+    "details": {
+      "type": "ship",
+      "good": "silk",
+      "slot": 0
+    },
+    "result": "花费3",
+    "time": "07:59:48"
+  },
+  {
+    "round": 6,
+    "sub_round": 2,
+    "player": "骰子",
+    "action": "掷骰",
+    "details": {
+      "good": "silk",
+      "roll": 4,
+      "new_pos": 8,
+      "overshot": false
+    },
+    "result": "",
+    "time": "07:59:48"
+  },
+  {
+    "round": 6,
+    "sub_round": 2,
+    "player": "骰子",
+    "action": "掷骰",
+    "details": {
+      "good": "ginseng",
+      "roll": 1,
+      "new_pos": 9,
+      "overshot": false
+    },
+    "result": "",
+    "time": "07:59:48"
+  },
+  {
+    "round": 6,
+    "sub_round": 2,
+    "player": "骰子",
+    "action": "掷骰",
+    "details": {
+      "good": "jade",
+      "roll": 5,
+      "new_pos": 13,
+      "overshot": false
+    },
+    "result": "",
+    "time": "07:59:48"
+  },
+  {
+    "round": 6,
+    "sub_round": 3,
+    "player": "AI3",
+    "action": "部署",
+    "details": {
+      "type": "shipyard",
+      "slot": 1
+    },
+    "result": "花费3",
+    "time": "07:59:48"
+  },
+  {
+    "round": 6,
+    "sub_round": 3,
+    "player": "AI1",
+    "action": "部署",
+    "details": {
+      "type": "insurance"
+    },
+    "result": "获得10",
+    "time": "07:59:48"
+  },
+  {
+    "round": 6,
+    "sub_round": 3,
+    "player": "AI2",
+    "action": "部署",
+    "details": {
+      "type": "ship",
+      "good": "silk",
+      "slot": 1
+    },
+    "result": "花费4",
+    "time": "07:59:48"
+  },
+  {
+    "round": 6,
+    "sub_round": 3,
+    "player": "骰子",
+    "action": "掷骰",
+    "details": {
+      "good": "silk",
+      "roll": 6,
+      "new_pos": 13,
+      "overshot": true
+    },
+    "result": "",
+    "time": "07:59:48"
+  },
+  {
+    "round": 6,
+    "sub_round": 3,
+    "player": "骰子",
+    "action": "掷骰",
+    "details": {
+      "good": "ginseng",
+      "roll": 5,
+      "new_pos": 13,
+      "overshot": true
+    },
+    "result": "",
+    "time": "07:59:48"
+  },
+  {
+    "round": 7,
+    "sub_round": 0,
+    "player": "AI1",
+    "action": "出价",
+    "details": {
+      "bid": 1
+    },
+    "result": "",
+    "time": "07:59:48"
+  },
+  {
+    "round": 7,
+    "sub_round": 0,
+    "player": "AI2",
+    "action": "放弃竞拍",
+    "details": {},
+    "result": "",
+    "time": "07:59:48"
+  },
+  {
+    "round": 7,
+    "sub_round": 0,
+    "player": "AI1",
+    "action": "成为港务长",
+    "details": {
+      "cost": 1
+    },
+    "result": "",
+    "time": "07:59:48"
+  },
+  {
+    "round": 7,
+    "sub_round": 0,
+    "player": "AI1",
+    "action": "购买股票",
+    "details": {
+      "good": "nutmeg"
+    },
+    "result": "花费5",
+    "time": "07:59:48"
+  },
+  {
+    "round": 7,
+    "sub_round": 0,
+    "player": "AI1",
+    "action": "设置出发位置",
+    "details": {
+      "nutmeg": 3,
+      "ginseng": 3,
+      "jade": 3
+    },
+    "result": "",
+    "time": "07:59:48"
+  },
+  {
+    "round": 7,
+    "sub_round": 1,
+    "player": "AI2",
+    "action": "部署",
+    "details": {
+      "type": "ship",
+      "good": "ginseng",
+      "slot": 0
+    },
+    "result": "花费1",
+    "time": "07:59:48"
+  },
+  {
+    "round": 7,
+    "sub_round": 1,
+    "player": "AI3",
+    "action": "部署",
+    "details": {
+      "type": "ship",
+      "good": "jade",
+      "slot": 0
+    },
+    "result": "花费3",
+    "time": "07:59:48"
+  },
+  {
+    "round": 7,
+    "sub_round": 1,
+    "player": "AI1",
+    "action": "部署",
+    "details": {
+      "type": "port",
+      "slot": 2
+    },
+    "result": "花费2",
+    "time": "07:59:48"
+  },
+  {
+    "round": 7,
+    "sub_round": 1,
+    "player": "AI2",
+    "action": "部署",
+    "details": {
+      "type": "ship",
+      "good": "ginseng",
+      "slot": 1
+    },
+    "result": "花费2",
+    "time": "07:59:48"
+  },
+  {
+    "round": 7,
+    "sub_round": 1,
+    "player": "AI3",
+    "action": "部署",
+    "details": {
+      "type": "shipyard",
+      "slot": 2
+    },
+    "result": "花费2",
+    "time": "07:59:48"
+  },
+  {
+    "round": 7,
+    "sub_round": 1,
+    "player": "AI1",
+    "action": "部署",
+    "details": {
+      "type": "ship",
+      "good": "nutmeg",
+      "slot": 2
+    },
+    "result": "花费2",
+    "time": "07:59:48"
+  },
+  {
+    "round": 7,
+    "sub_round": 1,
+    "player": "骰子",
+    "action": "掷骰",
+    "details": {
+      "good": "nutmeg",
+      "roll": 6,
+      "new_pos": 9,
+      "overshot": false
+    },
+    "result": "",
+    "time": "07:59:48"
+  },
+  {
+    "round": 7,
+    "sub_round": 1,
+    "player": "骰子",
+    "action": "掷骰",
+    "details": {
+      "good": "ginseng",
+      "roll": 1,
+      "new_pos": 4,
+      "overshot": false
+    },
+    "result": "",
+    "time": "07:59:48"
+  },
+  {
+    "round": 7,
+    "sub_round": 1,
+    "player": "骰子",
+    "action": "掷骰",
+    "details": {
+      "good": "jade",
+      "roll": 3,
+      "new_pos": 6,
+      "overshot": false
+    },
+    "result": "",
+    "time": "07:59:48"
+  },
+  {
+    "round": 7,
+    "sub_round": 2,
+    "player": "AI2",
+    "action": "部署",
+    "details": {
+      "type": "ship",
+      "good": "ginseng",
+      "slot": 2
+    },
+    "result": "花费3",
+    "time": "07:59:48"
+  },
+  {
+    "round": 7,
+    "sub_round": 2,
+    "player": "AI3",
+    "action": "部署",
+    "details": {
+      "type": "ship",
+      "good": "jade",
+      "slot": 1
+    },
+    "result": "花费4",
+    "time": "07:59:48"
+  },
+  {
+    "round": 7,
+    "sub_round": 2,
+    "player": "AI1",
+    "action": "部署",
+    "details": {
+      "type": "ship",
+      "good": "nutmeg",
+      "slot": 1
+    },
+    "result": "花费3",
+    "time": "07:59:48"
+  },
+  {
+    "round": 7,
+    "sub_round": 2,
+    "player": "骰子",
+    "action": "掷骰",
+    "details": {
+      "good": "nutmeg",
+      "roll": 2,
+      "new_pos": 11,
+      "overshot": false
+    },
+    "result": "",
+    "time": "07:59:48"
+  },
+  {
+    "round": 7,
+    "sub_round": 2,
+    "player": "骰子",
+    "action": "掷骰",
+    "details": {
+      "good": "ginseng",
+      "roll": 4,
+      "new_pos": 8,
+      "overshot": false
+    },
+    "result": "",
+    "time": "07:59:48"
+  },
+  {
+    "round": 7,
+    "sub_round": 2,
+    "player": "骰子",
+    "action": "掷骰",
+    "details": {
+      "good": "jade",
+      "roll": 6,
+      "new_pos": 12,
+      "overshot": false
+    },
+    "result": "",
+    "time": "07:59:48"
+  },
+  {
+    "round": 7,
+    "sub_round": 3,
+    "player": "AI2",
+    "action": "部署",
+    "details": {
+      "type": "port",
+      "slot": 1
+    },
+    "result": "花费3",
+    "time": "07:59:48"
+  },
+  {
+    "round": 7,
+    "sub_round": 3,
+    "player": "AI3",
+    "action": "部署",
+    "details": {
+      "type": "ship",
+      "good": "jade",
+      "slot": 2
+    },
+    "result": "花费5",
+    "time": "07:59:48"
+  },
+  {
+    "round": 7,
+    "sub_round": 3,
+    "player": "AI1",
+    "action": "部署",
+    "details": {
+      "type": "shipyard",
+      "slot": 1
+    },
+    "result": "花费3",
+    "time": "07:59:48"
+  },
+  {
+    "round": 7,
+    "sub_round": 3,
+    "player": "骰子",
+    "action": "掷骰",
+    "details": {
+      "good": "nutmeg",
+      "roll": 5,
+      "new_pos": 13,
+      "overshot": true
+    },
+    "result": "",
+    "time": "07:59:48"
+  },
+  {
+    "round": 7,
+    "sub_round": 3,
+    "player": "骰子",
+    "action": "掷骰",
+    "details": {
+      "good": "ginseng",
+      "roll": 1,
+      "new_pos": 9,
+      "overshot": false
+    },
+    "result": "",
+    "time": "07:59:48"
+  },
+  {
+    "round": 7,
+    "sub_round": 3,
+    "player": "骰子",
+    "action": "掷骰",
+    "details": {
+      "good": "jade",
+      "roll": 1,
+      "new_pos": 13,
+      "overshot": false
+    },
+    "result": "",
+    "time": "07:59:48"
+  }
+]
