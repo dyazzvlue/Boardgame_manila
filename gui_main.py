@@ -1,5 +1,14 @@
 """gui_main.py — Manila pygame 入口"""
 from __future__ import annotations
+import sys
+
+# 强制 UTF-8 输出，避免 macOS/Linux 非 UTF-8 环境下中文乱码
+try:
+    sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+    sys.stderr.reconfigure(encoding="utf-8", errors="replace")
+except Exception:
+    pass
+
 import sys, os, threading
 sys.path.insert(0, os.path.dirname(__file__))
 import gui.bridge as bridge

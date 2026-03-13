@@ -1,5 +1,14 @@
 """main.py — 程序入口"""
 from __future__ import annotations
+import sys
+
+# 强制 UTF-8 输出，避免 macOS/Linux 非 UTF-8 环境下中文乱码
+try:
+    sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+    sys.stderr.reconfigure(encoding="utf-8", errors="replace")
+except Exception:
+    pass
+
 from player import Player
 from ai import AIPlayer
 from game import Game
