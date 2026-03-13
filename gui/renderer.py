@@ -4,6 +4,7 @@ _NO_CLICK = object()  # 哨兵：区分"未点击"与"点击了值为None的按�
 import pygame
 from typing import Optional, Any, List, Tuple
 from constants import CFG, Goods
+from i18n import t as tr, goods_name
 
 # Colors
 BG=(18,25,45); PANEL_BG=(24,35,60); PANEL_DARK=(14,20,38)
@@ -71,11 +72,11 @@ class GameRenderer:
     def _draw_header(self,screen,ctx):
         pygame.draw.rect(screen,PANEL_DARK,(0,0,self.W,self.HEADER_H))
         pygame.draw.line(screen,BORDER,(0,self.HEADER_H-1),(self.W,self.HEADER_H-1),2)
-        t=_font(22,True).render("Manila — 马尼拉桌游",True,GOLD)
+        t=_font(22,True).render(tr("hdr.title"),True,GOLD)
         screen.blit(t,(16,13))
         ph=ctx.get("phase","")
         rn=ctx.get("round_num",0); sn=ctx.get("sub_round")
-        rt=f"第{rn}大轮"+(f"·第{sn}轮" if sn else "") if rn else ""
+        rt=(tr("hdr.round",n=rn)+(tr("hdr.sub_round",n=sn) if sn else "")) if rn else ""
         ps=_font(15).render(ph,True,TEXT); screen.blit(ps,(350,18))
         rs=_font(14).render(rt,True,TEXT_DIM); screen.blit(rs,(self.W-rs.get_width()-16,18))
 
@@ -83,21 +84,21 @@ class GameRenderer:
         x0=0; y0=self.HEADER_H; w=self.LEFT_W; h=self.SHIPS_H
         pygame.draw.rect(screen,PANEL_BG,(x0,y0,w,h))
         pygame.draw.line(screen,BORDER,(x0,y0+h-1),(x0+w,y0+h-1),1)
-        screen.blit(_font(14,True).render("货船轨道",True,GOLD),(14,y0+8))
+        screen.blit(_font(14,True).render(tr("ships.title"),True,GOLD),(14,y0+8))
         ships=ctx.get("ships",{}); ag=ctx.get("active_goods",[])
         track=CFG["game"]["ship_track_length"]
         if not ag:
-            screen.blit(_font(13).render("(等待港务长选择货物...)",True,TEXT_DIM),(14,y0+35))
+            screen.blit(_font(13).render(tr("ships.waiting"),True,TEXT_DIM),(14,y0+35))
             return
         row_h=(h-30)//len(ag); tx0=100; tx1=w-12; tw=tx1-tx0; cw=tw/(track+1)
         for ri,g in enumerate(ag):
             ry=y0+28+ri*row_h; ship=ships.get(g)
             if not ship: continue
-            gn=CFG["goods"][g.value]["name"]; gc=GOODS_COLORS[g]
+            gn=goods_name(g.value); gc=GOODS_COLORS[g]
             pos=ship.position; docked=ship.docked_at
             screen.blit(_font(13,True).render(gn,True,gc),(8,ry+18))
-            st="港口" if docked=="port" else ("造船厂" if docked=="shipyard" else
-               ("被劫" if ship.hijacked else f"@{pos}"))
+            st=tr("ships.port") if docked=="port" else (tr("ships.yard") if docked=="shipyard" else
+               (tr("ships.hijacked") if ship.hijacked else f"@{pos}"))
             screen.blit(_font(11).render(st,True,TEXT_DIM),(8,ry+36))
             pygame.draw.rect(screen,TRACK_BG,(tx0,ry+12,tw,28),border_radius=4)
             for ci in range(track+1):
@@ -131,15 +132,15 @@ class GameRenderer:
         x0=0; y0=self.BOARD_Y; w=self.LEFT_W; h=self.BOARD_H
         pygame.draw.rect(screen,PANEL_DARK,(x0,y0,w,h))
         pygame.draw.line(screen,BORDER,(x0,y0),(x0+w,y0),1)
-        screen.blit(_font(14,True).render("棋盘位置",True,GOLD),(14,y0+8))
+        screen.blit(_font(14,True).render(tr("board.title"),True,GOLD),(14,y0+8))
         board=ctx.get("board")
         if not board:
-            screen.blit(_font(13).render("(等待初始化...)",True,TEXT_DIM),(14,y0+35))
+            screen.blit(_font(13).render(tr("board.waiting"),True,TEXT_DIM),(14,y0+35))
             return
-        secs=[("港口",getattr(board,"port_slots",[]),(50,160,80)),
-              ("造船厂",getattr(board,"shipyard_slots",[]),(110,140,180)),
-              ("航海家",getattr(board,"navigator_slots",[]),(80,160,200)),
-              ("海盗",getattr(board,"pirate_slots",[]),(200,80,80))]
+        secs=[(tr("board.port"),getattr(board,"port_slots",[]),(50,160,80)),
+              (tr("board.shipyard"),getattr(board,"shipyard_slots",[]),(110,140,180)),
+              (tr("board.navigator"),getattr(board,"navigator_slots",[]),(80,160,200)),
+              (tr("board.pirate"),getattr(board,"pirate_slots",[]),(200,80,80))]
         sw=w//5
         for si,(stt,slots,col) in enumerate(secs):
             sx=x0+si*sw; sy=y0+28
@@ -152,7 +153,7 @@ class GameRenderer:
                 sr=pygame.Rect(sx+6,sly,sw-14,48)
                 pygame.draw.rect(screen,bg,sr,border_radius=5)
                 pygame.draw.rect(screen,col if occ else BORDER,sr,1,border_radius=5)
-                lb=getattr(slot,"label",f"槽{sli}")
+                lb=getattr(slot,"label",tr("board.slot",n=sli))
                 cost=getattr(slot,"cost",0); profit=getattr(slot,"profit",0)
                 move=getattr(slot,"move",0)
                 info=f"{lb} ¥{cost}"+( f"→¥{profit}" if profit else "")+( f" ±{move}" if move else "")
@@ -162,48 +163,48 @@ class GameRenderer:
                     pi=self._player_index(w2,ctx)
                     screen.blit(_font(11).render(w2.name[:5],True,PLAYER_COLORS_LIST[pi%5]),(sx+8,sly+22))
                 else:
-                    screen.blit(_font(11).render("空",True,TEXT_DIM),(sx+8,sly+22))
+                    screen.blit(_font(11).render(tr("board.empty"),True,TEXT_DIM),(sx+8,sly+22))
         # Insurance (insurance_slot 直接存 Player 对象，None=空)
         ins_player=getattr(board,"insurance_slot",None)
         ix=x0+4*sw; iy=y0+28
-        screen.blit(_font(12).render("保险",True,GOLD),(ix+6,iy))
+        screen.blit(_font(12).render(tr("board.insurance"),True,GOLD),(ix+6,iy))
         occ=ins_player is not None
         ir=pygame.Rect(ix+6,iy+20,sw-14,48)
         pygame.draw.rect(screen,(50,60,30) if occ else (28,40,65),ir,border_radius=5)
         pygame.draw.rect(screen,GOLD if occ else BORDER,ir,1,border_radius=5)
         gain=CFG.get("insurance",{}).get("immediate_gain",10)
-        screen.blit(_font(11).render(f"免费+{gain}",True,GOLD),(ix+8,iy+24))
+        screen.blit(_font(11).render(tr("board.free_gain",n=gain),True,GOLD),(ix+8,iy+24))
         if occ:
             pi=self._player_index(ins_player,ctx)
             screen.blit(_font(11).render(ins_player.name[:5],True,PLAYER_COLORS_LIST[pi%5]),(ix+8,iy+38))
         else:
-            screen.blit(_font(11).render("空",True,TEXT_DIM),(ix+8,iy+38))
+            screen.blit(_font(11).render(tr("board.empty"),True,TEXT_DIM),(ix+8,iy+38))
 
     def _draw_market(self,screen,ctx):
         x0=self.RIGHT_X; y0=self.HEADER_H; w=self.W-x0; h=self.MARKET_H
         pygame.draw.rect(screen,PANEL_BG,(x0,y0,w,h))
         pygame.draw.line(screen,BORDER,(x0,y0),(x0,y0+h),1)
         pygame.draw.line(screen,BORDER,(x0,y0+h-1),(x0+w,y0+h-1),1)
-        screen.blit(_font(14,True).render("市场股价",True,GOLD),(x0+10,y0+8))
+        screen.blit(_font(14,True).render(tr("market.title"),True,GOLD),(x0+10,y0+8))
         market=ctx.get("market")
         if not market: return
         ep=CFG["game"].get("end_price",30); rh=(h-28)//4
         for ri,g in enumerate(Goods):
-            ry=y0+26+ri*rh; gn=CFG["goods"][g.value]["name"]; gc=GOODS_COLORS[g]
+            ry=y0+26+ri*rh; gn=goods_name(g.value); gc=GOODS_COLORS[g]
             pr=market.prices[g]; bk=market.bank_stocks[g]
             screen.blit(_font(13,True).render(gn,True,gc),(x0+10,ry+4))
             bx=x0+68; bw=120; fi=int(bw*pr/ep)
             pygame.draw.rect(screen,TRACK_BG,(bx,ry+7,bw,12),border_radius=3)
             pygame.draw.rect(screen,gc,(bx,ry+7,fi,12),border_radius=3)
             ps=_font(13).render(f"¥{pr}",True,TEXT_BRIGHT); screen.blit(ps,(bx+bw+6,ry+5))
-            bs=_font(12).render(f"余{bk}",True,TEXT_DIM); screen.blit(bs,(x0+w-bs.get_width()-6,ry+5))
+            bs=_font(12).render(tr("market.remain",n=bk),True,TEXT_DIM); screen.blit(bs,(x0+w-bs.get_width()-6,ry+5))
 
     def _draw_players(self,screen,ctx):
         x0=self.RIGHT_X; y0=self.PLAYERS_Y; w=self.W-x0; h=self.PLAYERS_H
         pygame.draw.rect(screen,PANEL_DARK,(x0,y0,w,h))
         pygame.draw.line(screen,BORDER,(x0,y0),(x0,y0+h),1)
         pygame.draw.line(screen,BORDER,(x0,y0+h-1),(x0+w,y0+h-1),1)
-        screen.blit(_font(14,True).render("玩家状态",True,GOLD),(x0+10,y0+8))
+        screen.blit(_font(14,True).render(tr("players.title"),True,GOLD),(x0+10,y0+8))
         players=ctx.get("players",[]); market=ctx.get("market")
         if not players: return
         rh=max(26,(h-28)//max(len(players),1))
@@ -215,22 +216,22 @@ class GameRenderer:
             screen.blit(_font(13,True).render(p.name,True,pc),(x0+42,ry+4))
             screen.blit(_font(13).render(f"¥{p.money}",True,GOLD),(x0+42+_font(13,True).size(p.name)[0]+6,ry+4))
             wa=getattr(p,"workers_available",0); wt=getattr(p,"workers_total",0)
-            ws=_font(11).render(f"工{wa}/{wt}",True,TEXT_DIM); screen.blit(ws,(x0+w-ws.get_width()-6,ry+4))
+            ws=_font(11).render(tr("players.workers",a=wa,total=wt),True,TEXT_DIM); screen.blit(ws,(x0+w-ws.get_width()-6,ry+4))
             sx=x0+6
             for g in Goods:
                 cnt=getattr(p,"stocks",{}).get(g,0)
                 if cnt>0:
-                    gs=_font(11).render(f"{CFG['goods'][g.value]['name']}x{cnt}",True,GOODS_COLORS[g])
+                    gs=_font(11).render(f"{goods_name(g.value)}x{cnt}",True,GOODS_COLORS[g])
                     if sx+gs.get_width()<x0+w-4: screen.blit(gs,(sx,ry+rh-16)); sx+=gs.get_width()+4
             if market:
                 nw=p.net_worth(market.prices)
-                ns=_font(11).render(f"净¥{nw}",True,GREEN_OK); screen.blit(ns,(x0+w-ns.get_width()-6,ry+rh-16))
+                ns=_font(11).render(tr("players.net",n=nw),True,GREEN_OK); screen.blit(ns,(x0+w-ns.get_width()-6,ry+rh-16))
 
     def _draw_log(self,screen,log):
         x0=self.RIGHT_X; y0=self.LOG_Y; w=self.W-x0; h=self.LOG_H
         pygame.draw.rect(screen,PANEL_BG,(x0,y0,w,h))
         pygame.draw.line(screen,BORDER,(x0,y0),(x0,y0+h),1)
-        screen.blit(_font(13,True).render("事件日志",True,GOLD),(x0+10,y0+6))
+        screen.blit(_font(13,True).render(tr("log_panel.title"),True,GOLD),(x0+10,y0+6))
         screen.set_clip(pygame.Rect(x0+2,y0+24,w-4,h-26))
         lh=_font(12).get_height()+2; vis=(h-26)//lh
         st=max(0,len(log)-vis-self._log_scroll); en=max(0,len(log)-self._log_scroll)
@@ -243,7 +244,7 @@ class GameRenderer:
         pygame.draw.rect(screen,PANEL_DARK,(0,self.ACTION_Y,self.W,self.ACTION_H))
         pygame.draw.line(screen,ACCENT,(0,self.ACTION_Y),(self.W,self.ACTION_Y),2)
         if req is None:
-            screen.blit(_font(14).render("AI 行动中... 请等待",True,TEXT_DIM),(14,self.ACTION_Y+75))
+            screen.blit(_font(14).render(tr("action.ai_waiting"),True,TEXT_DIM),(14,self.ACTION_Y+75))
             self._buttons=[]
             self._current_req_type=None  # 重置，确保下次相同类型请求能重建按钮
             return
@@ -256,38 +257,46 @@ class GameRenderer:
         title=self._title(req); ts=_font(15,True).render(title,True,TEXT_BRIGHT); screen.blit(ts,(14,self.ACTION_Y+8))
         if rt=="bid":
             cv=self._dialog_state.get("value",req.get("min_bid",1))
-            vs=_font(15,True).render(f"出价: ¥{cv}",True,GOLD)
+            vs=_font(15,True).render(tr("action.bid_price",n=cv),True,GOLD)
             screen.blit(vs,vs.get_rect(centerx=self.W//2,top=self.ACTION_Y+8))
         elif rt=="ship_placement":
             pos=self._dialog_state.get("positions",{}); total=sum(pos.values()); tgt=CFG["game"]["ship_start_sum"]
-            cs=_font(13).render(f"合计:{total}(需{tgt})",True,GREEN_OK if total==tgt else RED_WARN)
+            cs=_font(13).render(tr("action.total_sum",t=total,r=tgt),True,GREEN_OK if total==tgt else RED_WARN)
             screen.blit(cs,(self.W-cs.get_width()-14,self.ACTION_Y+30))
         elif rt=="navigator_moves":
             done=len(self._dialog_state.get("moves",[])); mx=req.get("move_steps",1)
-            screen.blit(_font(13).render(f"已用步数:{done}/{mx}",True,TEXT_DIM),(self.W-160,self.ACTION_Y+8))
+            screen.blit(_font(13).render(tr("action.moves_used",d=done,m=mx),True,TEXT_DIM),(self.W-160,self.ACTION_Y+8))
         for btn in self._buttons: btn.draw(screen,_font(13),mouse)
 
     def _title(self,req):
         rt=req.get("type",""); nm=req.get("player_name") or req.get("nav_name") or req.get("pirate_name") or ""
-        d={"pause":"继续","game_over":"游戏结束","bid":f"{nm} — 竞标出价",
-           "choose_goods":f"{nm} — 选择货物(排除一种)","buy_stock":f"{nm} — 是否购买股票",
-           "ship_placement":f"{nm} — 设定起始位置(合计{CFG['game']['ship_start_sum']}格)",
-           "deploy":f"{nm} — 派遣工人","navigator_moves":f"{nm} — 航海家操作",
-           "pirate_board":f"{nm} — 海盗登船","pirate_kick":f"{nm} — 踢出哪个工人",
-           "pirate_dest":f"{nm} — 选择目的地","int":req.get("prompt","输入数字"),
-           "yes_no":req.get("prompt","请选择"),"choice":req.get("prompt","请选择")}
-        return d.get(rt,f"请 {nm} 行动")
+        ss=CFG["game"]["ship_start_sum"]
+        d={  "pause":         tr("title.pause"),
+             "game_over":     tr("title.game_over"),
+             "bid":           tr("title.bid",nm=nm),
+             "choose_goods":  tr("title.choose_goods",nm=nm),
+             "buy_stock":     tr("title.buy_stock",nm=nm),
+             "ship_placement":tr("title.ship_placement",nm=nm,total=ss),
+             "deploy":        tr("title.deploy",nm=nm),
+             "navigator_moves":tr("title.navigator",nm=nm),
+             "pirate_board":  tr("title.pirate_board",nm=nm),
+             "pirate_kick":   tr("title.pirate_kick",nm=nm),
+             "pirate_dest":   tr("title.pirate_dest",nm=nm),
+             "int":           req.get("prompt",tr("title.int")),
+             "yes_no":        req.get("prompt",tr("title.yes_no")),
+             "choice":        req.get("prompt",tr("title.choice"))}
+        return d.get(rt,tr("title.default",nm=nm))
 
     def _rebuild_buttons(self,req,ctx,px,py):
         self._buttons=[]; rt=req.get("type","")
         bx=px+10; by=py+36; bw=self.W-20; bh=self.ACTION_H-42
         if rt in("pause","game_over"):
             v=True if rt=="pause" else "exit"
-            t="继续" if rt=="pause" else "退出"
-            self._buttons=[Button((bx+bw//2-110,by+bh//2-22,220,44),t,v,BTN_ACTIVE)]
+            lbl=tr("action.confirm") if rt=="pause" else tr("action.exit")
+            self._buttons=[Button((bx+bw//2-110,by+bh//2-22,220,44),lbl,v,BTN_ACTIVE)]
         elif rt=="yes_no":
-            self._buttons=[Button((bx+bw//2-130,by+bh//2-22,120,44),"是",True,BTN_SEL),
-                           Button((bx+bw//2+10,by+bh//2-22,120,44),"否",False)]
+            self._buttons=[Button((bx+bw//2-130,by+bh//2-22,120,44),tr("action.yes"),True,BTN_SEL),
+                           Button((bx+bw//2+10,by+bh//2-22,120,44),tr("action.no"),False)]
         elif rt=="int":
             lo=req.get("lo",0); hi=req.get("hi",10); mid=(lo+hi)//2
             if "value" not in self._dialog_state:
@@ -300,14 +309,14 @@ class GameRenderer:
             self._dialog_state["max"]=mx  # 每次更新上限
             self._buttons=self._bid_btns(req,bx,by,bw,bh)
         elif rt=="choose_goods":
-            goods=req.get("goods",[]); self._grid([(CFG["goods"][g.value]["name"]+"\n(排除此项)",g) for g in goods],bx,by,bw,bh,4,[GOODS_COLORS[g] for g in goods])
+            goods=req.get("goods",[]); self._grid([(goods_name(g.value)+tr("action.exclude"),g) for g in goods],bx,by,bw,bh,4,[GOODS_COLORS[g] for g in goods])
         elif rt=="buy_stock":
             market=req.get("market"); money=req.get("player_money",0)
-            opts=[("不购买",None,BTN_NORMAL)]
+            opts=[(tr("action.no_buy"),None,BTN_NORMAL)]
             for g in Goods:
                 if market and market.can_buy(g):
-                    pr=market.buy_price(g); nm2=CFG["goods"][g.value]["name"]
-                    opts.append((f"{nm2}\n¥{pr}",g,GOODS_COLORS[g]) if pr<=money else (f"{nm2}\n¥{pr}(不足)",g,BTN_DISABLED))
+                    pr=market.buy_price(g); nm2=goods_name(g.value)
+                    opts.append((f"{nm2}\n¥{pr}",g,GOODS_COLORS[g]) if pr<=money else (f"{nm2}\n¥{pr}{tr('action.insufficient')}",g,BTN_DISABLED))
             self._grid([(t,v) for t,v,_ in opts],bx,by,bw,bh,5,[c for _,_,c in opts])
         elif rt=="ship_placement":
             goods=req.get("active_goods",[]); tgt=CFG["game"]["ship_start_sum"]
@@ -323,14 +332,14 @@ class GameRenderer:
                 self._dialog_state={"moves":[],"local_pos":lp,"max_steps":ms}
             self._nav_btns(req,bx,by,bw,bh)
         elif rt=="pirate_board":
-            goods=req.get("active_goods",[]); self._grid([(CFG["goods"][g.value]["name"]+"\n(登此船)",g) for g in goods]+[("放弃",None)],bx,by,bw,bh,4,[GOODS_COLORS.get(g,BTN_NORMAL) for g in goods]+[BTN_NORMAL])
+            goods=req.get("active_goods",[]); self._grid([(goods_name(g.value)+tr("action.board_ship"),g) for g in goods]+[(tr("action.pass"),None)],bx,by,bw,bh,4,[GOODS_COLORS.get(g,BTN_NORMAL) for g in goods]+[BTN_NORMAL])
         elif rt=="pirate_kick":
             ship=req.get("ship"); occ=[(i,s) for i,s in enumerate(ship.slots) if s.worker]
-            self._grid([(f"踢出槽{i}\n({s.worker.name})",i) for i,s in occ],bx,by,bw,bh,4,[BTN_ACTIVE]*len(occ))
+            self._grid([(tr("action.kick_slot",i=i,name=s.worker.name),i) for i,s in occ],bx,by,bw,bh,4,[BTN_ACTIVE]*len(occ))
         elif rt=="pirate_dest":
             tk=req.get("track_len",13)
-            self._buttons=[Button((bx+20,by+bh//2-25,240,50),"港口\n(股价上涨)",tk,(50,140,80)),
-                           Button((bx+280,by+bh//2-25,240,50),"造船厂\n(股价不涨)",0,(100,100,160))]
+            self._buttons=[Button((bx+20,by+bh//2-25,240,50),tr("action.dest_port"),tk,(50,140,80)),
+                           Button((bx+280,by+bh//2-25,240,50),tr("action.dest_yard"),0,(100,100,160))]
         elif rt=="choice":
             opts=req.get("options",[]); self._grid([(o,i) for i,o in enumerate(opts)],bx,by,bw,bh,3)
 
@@ -349,10 +358,10 @@ class GameRenderer:
         sw=68; sy=by+bh//2-22; btns=[]
         for i,(d,lb) in enumerate([(-10,"-10"),(-5,"-5"),(-1,"-1")]):
             btns.append(Button((bx+i*(sw+6),sy,sw,44),lb,("bd",d),BTN_NORMAL,cv+d<mn))
-        btns.append(Button((bx+240,sy,150,44),f"出价¥{cv}",("bc",cv),BTN_ACTIVE))
+        btns.append(Button((bx+240,sy,150,44),tr("action.bid_confirm",n=cv),("bc",cv),BTN_ACTIVE))
         for i,(d,lb) in enumerate([(1,"+1"),(5,"+5"),(10,"+10")]):
             btns.append(Button((bx+404+i*(sw+6),sy,sw,44),lb,("bd",d),BTN_NORMAL,cv+d>mx))
-        btns.append(Button((bw-110,sy,100,44),"放弃",("bf",0)))
+        btns.append(Button((bw-110,sy,100,44),tr("action.pass"),("bf",0)))
         return btns
 
     def _stepper(self,bx,by,bw,bh,lo,hi,cur):
@@ -367,41 +376,39 @@ class GameRenderer:
         pos=self._dialog_state.get("positions",{}); tgt=self._dialog_state.get("target",9)
         total=sum(pos.values()); rh=min(52,(bh-46)//max(len(goods),1)); btns=[]
         for ri,g in enumerate(goods):
-            gy=by+ri*rh; gn=CFG["goods"][g.value]["name"]; gc=GOODS_COLORS[g]; cv=pos.get(g,1)
+            gy=by+ri*rh; gn=goods_name(g.value); gc=GOODS_COLORS[g]; cv=pos.get(g,1)
             btns+=[Button((bx,gy,50,rh-4),"-1",("pd",g,-1),BTN_NORMAL,cv<=0),
                    Button((bx+56,gy,130,rh-4),f"{gn}:{cv}",None,gc,True),
                    Button((bx+194,gy,50,rh-4),"+1",("pd",g,1),BTN_NORMAL,cv>=5)]
         ok=total!=tgt
-        btns.append(Button((bw-130,by+bh-50,120,44),f"确认({total})",("pc",dict(pos)),BTN_ACTIVE if not ok else BTN_DISABLED,ok))
+        btns.append(Button((bw-130,by+bh-50,120,44),tr("action.confirm_n",n=total),("pc",dict(pos)),BTN_ACTIVE if not ok else BTN_DISABLED,ok))
         return btns
 
     def _deploy_btns(self,req,ctx,bx,by,bw,bh):
         ships=req.get("ships",{}); board=req.get("board"); ag=req.get("active_goods",[]); opts=[]
         if board:
             for i,s in enumerate(getattr(board,"port_slots",[])):
-                if getattr(s,"is_empty",True) or s.worker is None: opts.append((f"港口{s.label}\n¥{s.cost}→¥{s.profit}",("port",i,None),(50,160,80)))
+                if getattr(s,"is_empty",True) or s.worker is None: opts.append((tr("deploy.port",label=s.label,cost=s.cost,profit=s.profit),("port",i,None),(50,160,80)))
             for i,s in enumerate(getattr(board,"shipyard_slots",[])):
-                if getattr(s,"is_empty",True) or s.worker is None: opts.append((f"造船厂{s.label}\n¥{s.cost}→¥{s.profit}",("shipyard",i,None),(110,140,190)))
+                if getattr(s,"is_empty",True) or s.worker is None: opts.append((tr("deploy.shipyard",label=s.label,cost=s.cost,profit=s.profit),("shipyard",i,None),(110,140,190)))
             for i,s in enumerate(getattr(board,"navigator_slots",[])):
                 if getattr(s,"is_empty",True) or s.worker is None:
-                    lb="大" if i==0 else "小"
-                    opts.append((f"{lb}航海家\n¥{s.cost}±{s.move}步",("navigator",i,None),(80,160,200)))
+                    opts.append((tr("deploy.nav_big" if i==0 else "deploy.nav_small",cost=s.cost,move=s.move),("navigator",i,None),(80,160,200)))
             for i,s in enumerate(getattr(board,"pirate_slots",[])):
                 if getattr(s,"is_empty",True) or s.worker is None:
-                    lb="船长" if i==0 else "水手"
-                    opts.append((f"海盗·{lb}\n¥{s.cost}",("pirate",i,None),(200,80,80)))
+                    opts.append((tr("deploy.pirate_cap" if i==0 else "deploy.pirate_crew",cost=s.cost),("pirate",i,None),(200,80,80)))
             ins=getattr(board,"insurance_slot",None)
             if ins is None:  # insurance_slot 为 None 表示无人占用
                 gain=CFG.get("insurance",{}).get("immediate_gain",10)
-                opts.append((f"保险\n免费+¥{gain}",("insurance",0,None),(200,165,45)))
+                opts.append((tr("deploy.insurance",gain=gain),("insurance",0,None),(200,165,45)))
         for gi,g in enumerate(ag):
             ship=ships.get(g)
             if not ship or getattr(ship,"docked_at",None) is not None: continue
             emp=[(si,sl) for si,sl in enumerate(ship.slots) if getattr(sl,"is_empty",True) or sl.worker is None]
             if not emp: continue
             ci,cs=min(emp,key=lambda x:x[1].cost)
-            opts.append((f"{CFG['goods'][g.value]['name']}槽{ci}\n¥{cs.cost}",("ship",gi,ci),GOODS_COLORS[g]))
-        opts+=[("跳过部署",None,BTN_NORMAL),("回滚部署","rollback",(140,60,160))]
+            opts.append((tr("deploy.ship_slot",name=goods_name(g.value),i=ci,cost=cs.cost),("ship",gi,ci),GOODS_COLORS[g]))
+        opts+=[(tr("deploy.skip"),None,BTN_NORMAL),(tr("deploy.rollback"),"rollback",(140,60,160))]
         self._grid([(t,v) for t,v,_ in opts],bx,by,bw,bh,4,[c for _,_,c in opts])
 
     def _nav_btns(self,req,bx,by,bw,bh):
@@ -409,10 +416,10 @@ class GameRenderer:
         ms=self._dialog_state.get("max_steps",1); ud=req.get("undocked_goods",[]); track=CFG["game"]["ship_track_length"]
         opts=[]
         for g in ud:
-            pos=lp.get(g,0); gn=CFG["goods"][g.value]["name"]
+            pos=lp.get(g,0); gn=goods_name(g.value)
             if pos<track: opts.append((f"{gn}+1\n({pos}→{pos+1})",("nm",g,1),GOODS_COLORS[g]))
             if pos>0:    opts.append((f"{gn}-1\n({pos}→{pos-1})",("nm",g,-1),GOODS_COLORS[g]))
-        opts.append((f"结束({len(moves)}/{ms}步)",("nd",),BTN_NORMAL))
+        opts.append((tr("action.end_nav",d=len(moves),m=ms),("nd",),BTN_NORMAL))
         self._grid([(t,v) for t,v,_ in opts],bx,by,bw,bh,4,[c for _,_,c in opts])
 
     def handle_click(self,pos,current_req):

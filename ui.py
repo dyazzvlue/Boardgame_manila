@@ -2,6 +2,10 @@
 from __future__ import annotations
 from typing import Optional
 from constants import CFG, Goods, PositionType
+try:
+    from i18n import t
+except ImportError:
+    def t(k, **kw): return k
 
 # ── ANSI 颜色 ──────────────────────────────────────────────────────────────
 RESET = "\033[0m"

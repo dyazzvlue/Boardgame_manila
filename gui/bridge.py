@@ -14,6 +14,17 @@ import builtins as _builtins
 from typing import Any, Optional
 
 from constants import CFG, Goods
+try:
+    import sys as _sys, os as _os2
+    _sys.path.insert(0, _os2.path.dirname(_os2.path.dirname(_os2.path.abspath(__file__))))
+    from i18n import goods_name as _gname, t as _tr, get_lang as _glang
+except Exception:
+    def _gname(v): return CFG["goods"].get(v, {}).get("name", v)
+    def _tr(k, **kw): return k
+    def _glang(): return "zh"
+
+# expose t() so game.py can call ui.t()
+t = _tr
 
 # ANSI 常量（保留以兼容 game.py 的 print 语句）
 RESET = "\033[0m"
@@ -36,7 +47,7 @@ game_context: dict = {
     "board":        None,
     "players":      [],
     "active_goods": [],
-    "phase":        "等待开始...",
+    "phase":        "Waiting...",  # overwritten at runtime
     "round_num":    0,
     "sub_round":    None,
 }
@@ -127,28 +138,33 @@ _ansi_re = _re.compile(r'\x1b\[[0-9;]*m')
 _sep_re  = _re.compile(r'^[=\-─\s]+$')
 
 def _guess_style(text: str) -> Optional[str]:
-    """根据文本内容猜测日志样式；返回 None 表示跳过该行。"""
+    """根据文本内容猜测日志样式；同时匹配中英文关键词。"""
     if _sep_re.match(text):
-        return None  # 纯分隔线，不显示
-    if any(k in text for k in ('成为港务长', '连任港务长', '第一任港务长')):
+        return None
+    if any(k in text for k in ('成为港务长', '连任港务长', '第一任港务长',
+                                'Harbor Master', 're-elected', 'first Harbor')):
         return 'header'
-    if any(k in text for k in ('⚠', '失败', '↩', '回滚')):
+    if any(k in text for k in ('⚠', '失败', '↩', '回滚', 'failed', 'Rolled back')):
         return 'warn'
-    if '出价' in text or '比索成为' in text or '放弃竞拍' in text:
+    if any(k in text for k in ('出价中', '出价 ¥', '放弃出价', '比索成为',
+                                'bidding...', 'bids ¥', 'passes bid', 'paid', 'pesos')):
         return 'bid'
-    if ('购买' in text or '股票' in text) and '→' not in text:
+    if any(k in text for k in ('购买了', '不购买股票', 'purchased', 'skips stock')):
         return 'bid'
-    if '→' in text and any(k in text for k in ('港口', '造船厂', '航海家', '海盗', '保险', '槽', '位置')):
+    if '→' in text and any(k in text for k in ('港口', '造船厂', '航海家', '海盗', '保险', '槽',
+                                                 'Port', 'Shipyard', 'Navigator', 'Pirate', 'Insurance', 'Slot')):
         return 'deploy'
-    if '🎲' in text or '掷骰' in text:
+    if '🎲' in text or '掷骰' in text or 'Roll dice' in text:
         return 'dice'
-    if any(k in text for k in ('利润', '槽位收入', '价格上涨', '净收益', '保险结算', '货物利润')):
+    if any(k in text for k in ('利润', '槽位收入', '价格上涨', '净收益', '保险结算', '货物利润',
+                                'profit', 'income', 'price rises', 'net gain')):
         return 'profit'
-    if '（AI）' in text or '🤖' in text:
+    if '（AI）' in text or '(AI)' in text or '🤖' in text:
         return 'ai'
-    if any(k in text for k in ('🏴', '踢出', '驱逐', '海盗登上')):
+    if any(k in text for k in ('🏴', '踢出', '驱逐', '海盗登上', 'kicked', 'evicted', 'boarded')):
         return 'warn'
-    if any(k in text for k in ('── ', '结算', '出海', '游戏结束', '最终得分')):
+    if any(k in text for k in ('── ', '结算', '出海', '游戏结束', '最终得分',
+                                'Settle', 'Game Over', 'Final Scores', 'Voyage', 'Harbor')):
         return 'section'
     return 'normal'
 
@@ -176,7 +192,7 @@ def _ctx(**kwargs) -> None:
 
 
 def _good_name(g: Goods) -> str:
-    return CFG["goods"][g.value]["name"]
+    return _gname(g.value)
 
 
 def good_str(g) -> str:
@@ -227,11 +243,13 @@ def show_full_state(market, ships, board, players, active_goods) -> None:
 def show_round_start(round_num: int, sub_round=None) -> None:
     _ctx(round_num=round_num, sub_round=sub_round)
     if sub_round is None:
-        _log(f"=== 第 {round_num} 大轮 ===", "header")
-        _ctx(phase=f"第 {round_num} 大轮")
+        ph = _tr("phase.round", n=round_num)
+        _log(f"=== {ph} ===", "header")
+        _ctx(phase=ph)
     else:
-        _log(f"--- 第 {round_num} 大轮 · 第 {sub_round} 小轮", "section")
-        _ctx(phase=f"第 {round_num} 大轮 · 第 {sub_round} 小轮")
+        ph = _tr("phase.sub", n=round_num, s=sub_round)
+        _log(f"--- {ph}", "section")
+        _ctx(phase=ph)
 
 
 def show_profit_report(report) -> None:
@@ -241,11 +259,11 @@ def show_profit_report(report) -> None:
 
 def show_final_scores(players, market) -> None:
     _ctx(players=players, market=market)
-    _log("=== 游戏结束！最终得分 ===", "header")
+    _log(_tr("bridge.final_scores"), "header")
     ranking = sorted(players, key=lambda p: p.net_worth(market.prices), reverse=True)
     for i, p in enumerate(ranking):
         worth = p.net_worth(market.prices)
-        _log(f"  #{i+1} {p.name}  净资产{worth}", "good" if i == 0 else "normal")
+        _log(_tr("bridge.player_worth", rank=i+1, name=p.name, worth=worth), "good" if i == 0 else "normal")
     _ask({"type": "game_over", "winner": ranking[0], "players": players, "market": market})
 
 
@@ -266,7 +284,7 @@ def ask_yes_no(prompt: str) -> bool:
 
 
 def ask_bid(player_name: str, current_bid: int, min_bid: int, state_fn=None) -> int:
-    _log(f"  {player_name} 出价中...(当前最高 {current_bid})", "dim")
+    _log(_tr("bridge.bid_progress", name=player_name, cur=current_bid), "dim")
     val = _ask({
         "type": "bid",
         "player_name": player_name,
@@ -275,9 +293,9 @@ def ask_bid(player_name: str, current_bid: int, min_bid: int, state_fn=None) -> 
     })
     val = val if isinstance(val, int) else 0
     if val <= 0:
-        _log(f'  ✗ {player_name} 放弃出价', 'ai')
+        _log(_tr('bridge.bid_pass', name=player_name), 'ai')
     else:
-        _log(f'  ✓ {player_name} 出价 ¥{val}', 'bid')
+        _log(_tr('bridge.bid_placed', name=player_name, val=val), 'bid')
     return val
 
 
@@ -290,7 +308,7 @@ def ask_ship_placement(player_name: str, active_goods: list, n_ships: int) -> di
     })
     if isinstance(result, dict):
         pos_str = ', '.join(f'{_good_name(g)}={v}' for g, v in result.items())
-        _log(f'  ✓ {player_name} 设置出发位置: {pos_str}', 'section')
+        _log(_tr('bridge.placement_set', name=player_name, pos=pos_str), 'section')
     return result
 
 
@@ -302,7 +320,7 @@ def ask_choose_goods(player_name: str, all_goods: list) -> list:
     })
     if not isinstance(excluded, Goods) or excluded not in all_goods:
         excluded = all_goods[-1]  # replay 错位时的保底
-    _log(f'  ✓ {player_name} 排除了 {_good_name(excluded)} 货物', 'section')
+    _log(_tr('bridge.goods_excluded', name=player_name, good=_good_name(excluded)), 'section')
     return [g for g in all_goods if g != excluded]
 
 
@@ -315,7 +333,7 @@ def ask_buy_stock(player_name: str, market, player_money: int):
     })
     val = val if (val is None or isinstance(val, Goods)) else None
     if val is None:
-        _log(f'  {player_name} 不购买股票', 'dim')
+        _log(_tr('bridge.no_stock', name=player_name), 'dim')
     return val
 
 
@@ -416,4 +434,4 @@ def reset_bridge() -> None:
     with _lock:
         game_context.update({"market": None, "ships": {}, "board": None,
                               "players": [], "active_goods": [],
-                              "phase": "等待开始...", "round_num": 0, "sub_round": None})
+                              "phase": _tr("phase.waiting"), "round_num": 0, "sub_round": None})

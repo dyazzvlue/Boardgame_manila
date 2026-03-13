@@ -33,16 +33,16 @@ class Game:
     def setup(self) -> None:
         self.market.setup(self.players)
         print("\n" + "=" * 50)
-        print("  马尼拉 开始！")
+        print(ui.t("game.start"))
         print("=" * 50)
         for p in self.players:
             if p.is_human:
-                print(f"\n{p.name}，您的初始股票：")
+                print(ui.t("game.init_stocks", name=p.name))
                 for g, cnt in p.stocks.items():
                     if cnt > 0:
                         print(f"  {ui.good_str(g)} × {cnt}")
             else:
-                print(f"  AI 玩家 {p.name} 已就绪")
+                print(ui.t("game.ai_ready", name=p.name))
         self.hm_index = 0
 
 
@@ -145,7 +145,7 @@ class Game:
         while not self.market.is_game_over():
             self.round_num += 1
             print(f"\n{'='*50}")
-            print(f"  第 {self.round_num} 轮")
+            print(ui.t("game.round_banner", n=self.round_num))
             print(f"{'='*50}")
             self._run_round()
             if self.market.is_game_over():
@@ -164,7 +164,7 @@ class Game:
         # 1. 港务长竞拍
         hm = self._bid_harbor_master()
         self.hm_index = self.players.index(hm)
-        print(f"\n  {ui.player_str(hm, self.players)} 成为本轮港务长！")
+        print(ui.t("game.hm_win", name=ui.player_str(hm, self.players)))
 
         # 2. 港务长行动（买股票 → 选货物 → 设出发位置）
         self._harbor_master_actions(hm)
@@ -173,7 +173,7 @@ class Game:
         for sub_round in range(1, 4):
             self._sub_round = sub_round
             print("\n" + "=" * 50)
-            print(f"  ── 第{sub_round}次出海 ──")
+            print(ui.t("game.sub_banner", n=sub_round))
             self._deploy_phase(sub_round)
             self._roll_and_move(sub_round)
 
@@ -194,11 +194,11 @@ class Game:
         is_first_round = (self.round_num == 1)
         prev_hm = self.players[self.hm_index] if not is_first_round else None
         print("\n" + "=" * 50)
-        print(f"{ui.BOLD}── 竞拍港务长 ──{ui.RESET}")
+        print(ui.t("game.bid_section"))
         if is_first_round:
-            print("  第一轮：所有玩家均可参与竞价")
+            print(ui.t("game.bid_first_round"))
         else:
-            print(f"  上轮港务长: {prev_hm.name}")
+            print(ui.t("game.bid_prev_hm", name=prev_hm.name))
 
         current_bid = 0
         winning_player = prev_hm  # None 表示第一轮无默认赢家
@@ -224,9 +224,9 @@ class Game:
                 else:
                     bid = p.decide_bid(current_bid, self.market, self.active_goods)
                     if bid > 0:
-                        print(f"  {p.name}（AI）出价 {bid}")
+                        print(ui.t("game.ai_bid", name=p.name, bid=bid))
                     else:
-                        print(f"  {p.name}（AI）放弃")
+                        print(ui.t("game.ai_pass", name=p.name))
                 if bid >= min_bid and bid <= p.money:
                     current_bid = bid
                     winning_player = p
@@ -244,15 +244,15 @@ class Game:
         if is_first_round and winning_player is None:
             import random as _rnd
             winning_player = _rnd.choice(self.players)
-            print(f"  无人竞价，随机选定 {winning_player.name} 为第一任港务长")
+            print(ui.t("game.hm_first_random", name=winning_player.name))
             self.logger.record(self.round_num, 0, winning_player.name, "随机成为港务长", {"cost": 0})
         elif winning_player != prev_hm and current_bid > 0:
             winning_player.pay(current_bid)
-            print(f"  {winning_player.name} 花费 {current_bid} 比索成为港务长（费用交银行）")
+            print(ui.t("game.hm_win_bid", name=winning_player.name, cost=current_bid))
             self.logger.record(self.round_num, 0, winning_player.name, "成为港务长", {"cost": current_bid})
         else:
             lbl = prev_hm.name if prev_hm else winning_player.name
-            print(f"  无人竞价，{lbl} 免费连任港务长")
+            print(ui.t("game.hm_reelect", name=lbl))
             self.logger.record(self.round_num, 0, lbl, "连任港务长", {"cost": 0})
 
         return winning_player
@@ -262,7 +262,7 @@ class Game:
     # ─────────────────────────────────────────────────────────
     def _harbor_master_actions(self, hm: Player) -> None:
         print("\n" + "=" * 50)
-        print(f"{ui.BOLD}── 港务长行动 ──{ui.RESET}")
+        print(ui.t("game.hm_section"))
         # 可选：购买股票
         if hm.is_human:
             good = ui.ask_buy_stock(hm.name, self.market, hm.money)
@@ -270,7 +270,7 @@ class Game:
             good = hm.decide_buy_stock(self.market)
         if good is not None:
             price = self.market.buy_stock(good, hm)
-            print(f"  {hm.name} 购买了 {ui.good_str(good)}，花费 {price}")
+            print(ui.t("game.hm_buy_stock", name=hm.name, good=ui.good_str(good), price=price))
             self.logger.record(self.round_num, 0, hm.name, "购买股票", {"good": good.value}, f"花费{price}")
         else:
             self.logger.record(self.round_num, 0, hm.name, "不购买股票", {})
@@ -281,15 +281,15 @@ class Game:
         else:
             self.active_goods = hm.decide_choose_goods(list(Goods), self.market)
             excluded = [g for g in Goods if g not in self.active_goods]
-            print(f"  {hm.name}（AI）排除了 {ui.good_str(excluded[0])}")
+            print(ui.t("game.hm_ai_exclude", name=hm.name, good=ui.good_str(excluded[0])))
 
         # 设置各货船初始位置
         if hm.is_human:
             positions = ui.ask_ship_placement(hm.name, self.active_goods, len(self.active_goods))
         else:
             positions = hm.decide_ship_placement(self.active_goods)
-            print(f"  {hm.name}（AI）分配位置: " +
-                  ", ".join(f"{ui._good_name(g)}={v}" for g, v in positions.items()))
+            print(ui.t("game.hm_ai_place", name=hm.name,
+                       pos=", ".join(f"{ui._good_name(g)}={v}" for g, v in positions.items())))
         for g, pos in positions.items():
             self.ships[g].position = pos
         self.logger.record(self.round_num, 0, hm.name, "设置出发位置",
@@ -317,7 +317,7 @@ class Game:
                 self._load_state(snap)
                 self.logger.record(self.round_num, sub_round, "系统", "回滚",
                                    {"sub_round": sub_round}, "部署阶段已回滚")
-                print("\n  ↩ 已回滚！本次出海的所有部署已撤销，请重新部署。\n")
+                print(ui.t("game.rollback"))
 
     def _do_deploy(self, player: Player) -> None:
         if player.workers_available == 0 or not player.can_deploy:
@@ -339,7 +339,7 @@ class Game:
         if result is None:
             player.can_deploy = False
             self.logger.record(self.round_num, self._sub_round, player.name, "跳过部署", {})
-            print(f"  {player.name} 选择不再部署")
+            print(ui.t("game.skip_deploy", name=player.name))
             return
 
         pos_type, idx1, idx2 = result
@@ -347,36 +347,36 @@ class Game:
             if pos_type == "ship":
                 g = self.active_goods[idx1]
                 cost = self.ships[g].add_worker(idx2, player)
-                print(f"  {player.name} → {ui.good_str(g)} 槽{idx2}（花费{cost}）")
+                print(ui.t("game.deploy_ship", name=player.name, good=ui.good_str(g), idx=idx2, cost=cost))
                 self.logger.record(self.round_num, self._sub_round, player.name, "部署",
                                    {"type": "ship", "good": g.value, "slot": idx2}, f"花费{cost}")
             elif pos_type == "port":
                 cost = self.board.deploy_port(idx1, player)
-                print(f"  {player.name} → 港口 {self.board.port_slots[idx1].label}（花费{cost}）")
+                print(ui.t("game.deploy_port", name=player.name, label=self.board.port_slots[idx1].label, cost=cost))
                 self.logger.record(self.round_num, self._sub_round, player.name, "部署",
                                    {"type": "port", "slot": idx1}, f"花费{cost}")
             elif pos_type == "shipyard":
                 cost = self.board.deploy_shipyard(idx1, player)
-                print(f"  {player.name} → 造船厂 {self.board.shipyard_slots[idx1].label}（花费{cost}）")
+                print(ui.t("game.deploy_shipyard", name=player.name, label=self.board.shipyard_slots[idx1].label, cost=cost))
                 self.logger.record(self.round_num, self._sub_round, player.name, "部署",
                                    {"type": "shipyard", "slot": idx1}, f"花费{cost}")
             elif pos_type == "navigator":
                 cost = self.board.deploy_navigator(idx1, player)
-                print(f"  {player.name} → 航海家 {self.board.navigator_slots[idx1].label}（花费{cost}）")
+                print(ui.t("game.deploy_navigator", name=player.name, label=self.board.navigator_slots[idx1].label, cost=cost))
                 self.logger.record(self.round_num, self._sub_round, player.name, "部署",
                                    {"type": "navigator", "slot": idx1}, f"花费{cost}")
             elif pos_type == "pirate":
                 cost = self.board.deploy_pirate(idx1, player)
-                print(f"  {player.name} → 海盗 {self.board.pirate_slots[idx1].label}（花费{cost}）")
+                print(ui.t("game.deploy_pirate", name=player.name, label=self.board.pirate_slots[idx1].label, cost=cost))
                 self.logger.record(self.round_num, self._sub_round, player.name, "部署",
                                    {"type": "pirate", "slot": idx1}, f"花费{cost}")
             elif pos_type == "insurance":
                 gain = self.board.deploy_insurance(player)
-                print(f"  {player.name} → 保险（立即获得+{gain}）")
+                print(ui.t("game.deploy_insurance", name=player.name, gain=gain))
                 self.logger.record(self.round_num, self._sub_round, player.name, "部署",
                                    {"type": "insurance"}, f"获得{gain}")
         except ValueError as e:
-            print(f"  ⚠ 部署失败: {e}")
+            print(ui.t("game.deploy_fail", err=e))
 
     # ─────────────────────────────────────────────────────────
     # 掷骰子 + 移船
@@ -390,7 +390,7 @@ class Game:
         # 掷骰子（>13越过终点直接进港，==13等待海盗行动）
         rolls: dict[Goods, int] = {}
         track_roll = CFG["game"]["ship_track_length"]
-        print(f"\n  掷骰子:")
+        print(ui.t("game.roll_section"))
         for g_roll in self.active_goods:
             ship_r = self.ships[g_roll]
             if ship_r.docked_at is not None:
@@ -400,14 +400,14 @@ class Game:
             intended = ship_r.position + roll
             ship_r.position = min(intended, track_roll)
             overshot_str = "（越过终点）" if intended > track_roll else ""
-            print(f"    {ui.good_str(g_roll)}: 🎲{roll}  → 位置 {ship_r.position}{overshot_str}")
+            print(ui.t("game.roll_result", good=ui.good_str(g_roll), roll=roll, pos=ship_r.position, over=overshot_str))
             self.logger.record(self.round_num, sub_round, "骰子", "掷骰",
                                {"good": g_roll.value, "roll": roll,
                                 "new_pos": self.ships[g_roll].position,
                                 "overshot": (intended > track_roll)})
             if intended > track_roll:
                 self.ships[g_roll].dock_to_port()
-                print(f"    {ui.good_str(g_roll)} 越过终点 → 直接进港！🏁")
+                print(ui.t("game.sail_to_port", good=ui.good_str(g_roll)))
 
         if sub_round == 2:
             self._pirate_board_action()
@@ -421,7 +421,7 @@ class Game:
             ship = self.ships[g]
             if ship.docked_at is None and ship.position == track_final and not ship.hijacked:
                 ship.dock_to_shipyard()
-                print(f"    {ui.good_str(g)} 停在终点，驶入造船厂 ⚓")
+                print(ui.t("game.sail_to_yard", good=ui.good_str(g)))
 
         ui.show_ships(self.ships, self.active_goods)
 
@@ -455,7 +455,7 @@ class Game:
                 actual = new_pos - self.ships[target].position
                 self.ships[target].position = new_pos
                 dir_str = f"+{actual}" if actual >= 0 else str(actual)
-                print(f"  {nav_player.name} 移动 {ui.good_str(target)} {dir_str}格 → {new_pos}")
+                print(ui.t("game.nav_move", name=nav_player.name, good=ui.good_str(target), dir=dir_str, pos=new_pos))
                 self.logger.record(self.round_num, self._sub_round, nav_player.name, "航海家",
                                    {"good": target.value, "delta": actual, "new_pos": new_pos})
 
@@ -498,11 +498,11 @@ class Game:
             evicted_player = ship.slots[board_slot].clear()
             if evicted_player:
                 evicted_player.workers_available += 1
-                print(f"  海盗踢出 {evicted_player.name} 从 {ui.good_str(target)} 槽{board_slot}！")
+                print(ui.t("game.pirate_kick", victim=evicted_player.name, good=ui.good_str(target), slot=board_slot))
         # 海盗不花费工人，直接占位（用特殊标记占位，captain本人不是普通工人）
         ship.slots[board_slot].worker = captain
         ship.hijacked = True
-        print(f"  {captain.name} 登上了 {ui.good_str(target)} 槽{board_slot}！🏴‍☠️")
+        print(ui.t("game.pirate_board_slot", name=captain.name, good=ui.good_str(target), slot=board_slot))
 
     # ─────────────────────────────────────────────────────────
     # 海盗抢劫（第3轮骰子后）
@@ -530,7 +530,7 @@ class Game:
                                   and (crew_slot.is_empty or p is not crew_slot.worker)]
             if evicted:
                 names = ", ".join(p.name for p in evicted)
-                print(f"  {captain.name} 驱逐 {ui.good_str(g)} 上的所有工人: {names}")
+                print(ui.t("game.pirate_evict", name=captain.name, good=ui.good_str(g), names=names))
 
             # 海盗选择目的地
             if captain.is_human:
@@ -541,11 +541,11 @@ class Game:
             if dest >= track:
                 ship.position = track
                 ship.dock_to_port()
-                print(f"  {ui.good_str(g)} 被送往港口！")
+                print(ui.t("game.pirate_port", good=ui.good_str(g)))
             else:
                 ship.position = 0
                 ship.dock_to_shipyard()
-                print(f"  {ui.good_str(g)} 被送往造船厂！")
+                print(ui.t("game.pirate_yard", good=ui.good_str(g)))
 
             # 海盗获得货物价值（若有船员则平分）
             cargo_val = CFG["goods"][g.value]["cargo_value"]
@@ -555,7 +555,7 @@ class Game:
             share = cargo_val // len(pirates)
             for pirate in pirates:
                 pirate.collect(share)
-                print(f"  海盗 {pirate.name} 获得 {ui.good_str(g)} 货物分成 {share} 比索")
+                print(ui.t("game.pirate_share", name=pirate.name, good=ui.good_str(g), share=share))
             self.logger.record(self.round_num, self._sub_round, captain.name, "海盗劫货",
                                {"good": g.value, "dest": "port" if dest >= track else "shipyard",
                                 "share": share, "pirates": [p.name for p in pirates]})
@@ -565,7 +565,7 @@ class Game:
     # ─────────────────────────────────────────────────────────
     def _distribute_profits(self) -> None:
         print("\n" + "=" * 50)
-        print(f"{ui.BOLD}── 结算利润 ──{ui.RESET}")
+        print(ui.t("game.profit_section"))
         track = CFG["game"]["ship_track_length"]
 
         # 未停靠的船强制进造船厂
@@ -573,7 +573,7 @@ class Game:
             ship = self.ships[g]
             if ship.docked_at is None:
                 ship.dock_to_shipyard()
-                print(f"  {ui.good_str(g)} 未抵港，驶入造船厂")
+                print(ui.t("game.good_to_yard", good=ui.good_str(g)))
 
         port_goods = [g for g in self.active_goods if self.ships[g].docked_at == PositionType.PORT]
         shipyard_goods = [g for g in self.active_goods if self.ships[g].docked_at == PositionType.SHIPYARD]
@@ -584,7 +584,7 @@ class Game:
             payouts = self.ships[g].distribute_cargo_profit(cargo_val)
             if payouts:
                 pout_str = ", ".join(f"{p.name}+{v}" for p, v in payouts.items())
-                print(f"  {ui.good_str(g)} 货物利润（货值{cargo_val}）: {pout_str}")
+                print(ui.t("game.good_profit", good=ui.good_str(g), val=cargo_val, pout=pout_str))
 
         # 港口槽位利润（按到港船数量）
         # 规则：A/B/C分别对应第一/二/三艘到达的船
@@ -594,7 +594,7 @@ class Game:
         port_payouts = self.board.resolve_port(docked_labels)
         if port_payouts:
             pout_str = ", ".join(f"{p.name}+{v}" for p, v in port_payouts.items())
-            print(f"  港口槽位收入: {pout_str}")
+            print(ui.t("game.port_income", pout=pout_str))
 
         # 造船厂槽位利润（有保险则由保险方赔付，否则银行兜底免费）
         ship_labels = {port_labels[i] for i in range(len(shipyard_goods))}
@@ -604,18 +604,17 @@ class Game:
             sy_payouts = self.board.resolve_shipyard_with_insurance(ship_labels, ins_player)
             if sy_payouts:
                 pout_str = ", ".join(f"{p.name}+{v}" for p, v in sy_payouts.items())
-                print(f"  造船厂槽位收入（保险赔付）: {pout_str}")
+                print(ui.t("game.yard_income_ins", pout=pout_str))
             total_paid = sum(sy_payouts.values())
             immediate = CFG["insurance"]["immediate_gain"]
             ins_net = immediate - total_paid
-            print(f"  保险结算: {ins_player.name} 净收益 {ins_net}"
-                  f"（立即+{immediate}，赔付造船厂 {total_paid}）")
+            print(ui.t("game.insurance_net", name=ins_player.name, net=ins_net, gain=immediate, paid=total_paid))
         else:
             # 无人购买保险，造船厂槽位收益由银行支付
             sy_payouts = self.board.resolve_shipyard(ship_labels)
             if sy_payouts:
                 pout_str = ", ".join(f"{p.name}+{v}" for p, v in sy_payouts.items())
-                print(f"  造船厂槽位收入: {pout_str}")
+                print(ui.t("game.yard_income", pout=pout_str))
 
         ui.show_players(self.players, self.market)
 
@@ -624,11 +623,11 @@ class Game:
     # ─────────────────────────────────────────────────────────
     def _raise_prices(self) -> None:
         print("\n" + "=" * 50)
-        print(f"{ui.BOLD}── 股价上涨 ──{ui.RESET}")
+        print(ui.t("game.price_section"))
         port_goods = [g for g in self.active_goods if self.ships[g].docked_at == PositionType.PORT]
         for g in port_goods:
             new_price = self.market.raise_price(g)
-            print(f"  {ui.good_str(g)} 价格上涨 → {new_price}")
+            print(ui.t("game.price_rise", good=ui.good_str(g), price=new_price))
         ui.show_market(self.market)
 
     # ─────────────────────────────────────────────────────────
