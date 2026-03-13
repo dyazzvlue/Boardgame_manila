@@ -25,7 +25,7 @@ _fc={}
 def _font(sz,bold=False):
     k=(sz,bold)
     if k in _fc: return _fc[k]
-    for n in ["notosanscjksc","wqyzenhei","simhei","microsoftyahei","unifont"]:
+    for n in ["notosanscjksc","pingfangsc","stheiti","hiraginosansgb","arialunicodems","wqyzenhei","simhei","microsoftyahei","unifont"]:
         p=pygame.font.match_font(n,bold=bold)
         if p:
             _fc[k]=pygame.font.Font(p,sz); return _fc[k]
