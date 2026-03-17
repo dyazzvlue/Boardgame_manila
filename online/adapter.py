@@ -100,14 +100,18 @@ class _ManilaNetBridgeShim:
             return None
 
     def ask_choose_goods(self, player_name, goods_list, **kw) -> list:
+        """
+        前端返回被排除货物的单个字符串；game.py 需要 *留下的* 货物列表。
+        """
         idx = self._player_idx(player_name)
         val = self._b.ask(idx, "choose_goods", {
             "goods": [g.value for g in goods_list],
         })
-        if isinstance(val, list):
+        if isinstance(val, str):
             try:
-                return [Goods(v) for v in val]
-            except (ValueError, KeyError):
+                excluded = Goods(val)
+                return [g for g in goods_list if g != excluded]
+            except ValueError:
                 pass
         return goods_list
 
@@ -128,17 +132,61 @@ class _ManilaNetBridgeShim:
         _r.shuffle(positions)
         return {g: p for g, p in zip(active_goods, positions)}
 
-    def ask_deploy_position(self, player_name, market, ships, board,
-                            players, active_goods, **kw):
-        from .state import _market_to_dict, _ship_to_dict, _board_to_dict
+    def ask_deploy_position(self, player_name, ships, board,
+                            active_goods, workers_available, **kw):
+        """
+        game.py 调用签名:
+            ui.ask_deploy_position(player.name, self.ships, self.board,
+                                   self.active_goods, player.workers_available)
+        返回值：game.py 期望 (pos_type, idx1, idx2) tuple 或 None。
+        """
+        from .state import _ship_to_dict, _board_to_dict
         idx = self._player_idx(player_name)
         val = self._b.ask(idx, "deploy", {
-            "market": _market_to_dict(market),
             "ships": {g.value: _ship_to_dict(s) for g, s in ships.items()},
             "board": _board_to_dict(board),
             "active_goods": [g.value for g in active_goods],
+            "workers_available": workers_available,
         })
-        return val  # game.py 负责校验
+        if val is None:
+            return None
+        try:
+            t = val.get("type", "")
+            if t == "ship":
+                good_val = val.get("good", "")
+                slot = int(val.get("slot", 0))
+                idx1 = next(i for i, g in enumerate(active_goods) if g.value == good_val)
+                return ("ship", idx1, slot)
+            elif t in ("port", "shipyard", "navigator", "pirate"):
+                return (t, int(val.get("slot", 0)), 0)
+            elif t == "insurance":
+                return ("insurance", 0, 0)
+        except (TypeError, ValueError, StopIteration):
+            pass
+        return None
+
+    def ask_navigator_moves(self, player_name, still_sailing, move_steps, ships, **kw):
+        """
+        game.py 调用签名:
+            ui.ask_navigator_moves(nav_player.name, still_sailing, move_steps, self.ships)
+        前端返回: [{good: str, step: int}, ...]
+        game.py 期望: list of (Goods, int) tuples
+        """
+        idx = self._player_idx(player_name)
+        val = self._b.ask(idx, "navigator_moves", {
+            "undocked_goods": [g.value for g in still_sailing],
+            "move_steps": move_steps,
+        })
+        if isinstance(val, list):
+            result = []
+            for m in val:
+                try:
+                    result.append((Goods(m["good"]), int(m["step"])))
+                except (KeyError, ValueError, TypeError):
+                    pass
+            if result:
+                return result
+        return []
 
     def ask_insurance(self, player_name, **kw) -> bool:
         idx = self._player_idx(player_name)
@@ -153,11 +201,15 @@ class _ManilaNetBridgeShim:
         })
         return val if isinstance(val, str) else "pass"
 
-    def ask_pirate_target(self, pirate_name, ships, **kw):
-        from .state import _ship_to_dict
+    def ask_pirate_board(self, pirate_name, boardable_goods, ships, **kw):
+        """
+        game.py 调用签名:
+            ui.ask_pirate_board(captain.name, boardable_list, ships_dict)
+        boardable_goods: list[Goods] —— 可登船的货物列表
+        """
         idx = self._player_idx(pirate_name)
-        val = self._b.ask(idx, "pirate_target", {
-            "ships": {g.value: _ship_to_dict(s) for g, s in ships.items()},
+        val = self._b.ask(idx, "pirate_board", {
+            "active_goods": [g.value for g in boardable_goods],
         })
         if val is None:
             return None
