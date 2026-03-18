@@ -75,17 +75,24 @@ class _ManilaNetBridgeShim:
     def _good_name(self, g): return g.value if g else ""
     def player_str(self, p, *a): return p.name if p else "?"
 
-    # 兼容 t() 国际化调用
-    def t(self, key, **kw): return key
+    # 兼容 t() 国际化调用——使用真实翻译，失败时原样返回 key
+    def t(self, key, **kw):
+        try:
+            from i18n import t as _t
+            return _t(key, **kw)
+        except Exception:
+            return key
 
     # ── ask_* → AbstractBridge.ask() ────────────────────────────────────
 
     def ask_bid(self, player_name, current_bid, min_bid, **kw) -> int:
+        self._update()  # 先更新 canvas
         idx = self._player_idx(player_name)
         val = self._b.ask(idx, "bid", {"current_bid": current_bid, "min_bid": min_bid})
         return val if isinstance(val, int) else 0
 
     def ask_buy_stock(self, player_name, market, player_money, **kw):
+        self._update()  # 先更新 canvas
         from .state import _market_to_dict
         idx = self._player_idx(player_name)
         val = self._b.ask(idx, "buy_stock", {
@@ -103,6 +110,7 @@ class _ManilaNetBridgeShim:
         """
         前端返回被排除货物的单个字符串；game.py 需要 *留下的* 货物列表。
         """
+        self._update()  # 先更新 canvas
         idx = self._player_idx(player_name)
         val = self._b.ask(idx, "choose_goods", {
             "goods": [g.value for g in goods_list],
@@ -116,6 +124,7 @@ class _ManilaNetBridgeShim:
         return goods_list
 
     def ask_ship_placement(self, player_name, active_goods, count, **kw) -> dict:
+        self._update()  # 先更新 canvas
         idx = self._player_idx(player_name)
         val = self._b.ask(idx, "ship_placement", {
             "active_goods": [g.value for g in active_goods],
@@ -207,6 +216,7 @@ class _ManilaNetBridgeShim:
             ui.ask_pirate_board(captain.name, boardable_list, ships_dict)
         boardable_goods: list[Goods] —— 可登船的货物列表
         """
+        self._update()  # 先更新 canvas
         idx = self._player_idx(pirate_name)
         val = self._b.ask(idx, "pirate_board", {
             "active_goods": [g.value for g in boardable_goods],
@@ -277,9 +287,37 @@ class ManilaGame(AbstractGame):
         self._game = Game(self._players)
 
     def run(self) -> None:
-        seed = random.randint(0, 2**31 - 1)
-        random.seed(seed)
-        self._game.run()
+        import sys as _sys, re as _re
+
+        class _BridgePrint:
+            """将 game.py print() 输出重定向到 bridge.log()"""
+            def __init__(self, bridge):
+                self._bridge = bridge
+                self._buf = ''
+            def write(self, s):
+                self._buf += s
+                while '\n' in self._buf:
+                    line, self._buf = self._buf.split('\n', 1)
+                    line = _re.sub(r'\x1b\[[0-9;]*m', '', line).strip()
+                    if line:
+                        self._bridge.log(line, 'normal')
+                return len(s)
+            def flush(self):
+                if self._buf.strip():
+                    line = _re.sub(r'\x1b\[[0-9;]*m', '', self._buf).strip()
+                    if line:
+                        self._bridge.log(line, 'normal')
+                    self._buf = ''
+
+        old_stdout = _sys.stdout
+        _sys.stdout = _BridgePrint(self.bridge)
+        try:
+            seed = random.randint(0, 2**31 - 1)
+            random.seed(seed)
+            self._game.run()
+        finally:
+            _sys.stdout.flush()
+            _sys.stdout = old_stdout
 
     def get_state(self) -> dict:
         """直接从 self._game 读取状态，不依赖 gui.bridge.game_context。"""
