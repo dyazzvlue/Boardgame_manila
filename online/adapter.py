@@ -338,5 +338,16 @@ class ManilaGame(AbstractGame):
     def on_player_disconnected(self, player_idx: int) -> None:
         if 0 <= player_idx < len(self._players):
             p = self._players[player_idx]
-            p.is_human = False
+            if not isinstance(p, AIPlayer):
+                # 将断线的真人玩家升级为 AIPlayer，保留所有游戏状态
+                ai = AIPlayer(p.name, len(self._players))
+                ai.__dict__.update(p.__dict__)
+                ai.is_human = False
+                self._players[player_idx] = ai
+                # 同步到 game 对象中
+                if self._game is not None:
+                    self._game.players[player_idx] = ai
+                p = ai
+            else:
+                p.is_human = False
             self.bridge.log(f"{p.name} 断线，已切换为 AI 接管", "warn")
