@@ -1,9 +1,15 @@
 """ui.py — 终端 UI：显示与输入"""
 from __future__ import annotations
 from typing import Optional
-from constants import CFG, Goods, PositionType
+if __package__:
+    from .constants import CFG, Goods, PositionType
+else:
+    from constants import CFG, Goods, PositionType
 try:
-    from i18n import t
+    if __package__:
+        from .i18n import t
+    else:
+        from i18n import t
 except ImportError:
     def t(k, **kw): return k
 

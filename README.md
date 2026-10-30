@@ -208,3 +208,20 @@ AI 采用**贪心策略**，具体行为如下：
 ## 游戏规则
 
 详细规则请参阅 [rules.md](rules.md)。
+
+## 联机插件与隔离
+
+与 `Boardgame_platform` 同级放置，或设置 `MANILA_PATH` 指向本仓库。
+平台以独立包 `boardgame_manila` 加载游戏，不再替换顶层 `game`、`ui` 等模块，
+也不会修改 `sys.path`。游戏仓库与平台插件需一起更新。
+
+`Game(players, ui_bridge=None, rng=None, log=None, save_logs=True)` 支持实例级依赖注入。
+CLI 默认使用终端 UI；GUI 显式传入 GUI bridge 和存档种子创建的 `random.Random`。
+联机适配器为每房创建独立 UI bridge、随机源和日志回调，不修改进程 stdout，
+也不写本地对局日志。AI、市场洗牌和骰子共享本局随机源，不影响其他房间。
+
+在平台目录运行无服务回归测试：
+
+```bash
+PYTHONDONTWRITEBYTECODE=1 python -m unittest discover -s tests -p test_game_plugins.py
+```

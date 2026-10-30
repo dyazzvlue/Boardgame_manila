@@ -7,7 +7,8 @@ Manila/online/adapter.py
 或: PYTHONPATH=/path/to/gameplatform python3 ...
 """
 from __future__ import annotations
-import sys, os, threading, random
+import random
+import re
 from typing import Any
 
 try:
@@ -19,34 +20,30 @@ except ImportError as _e:
         f"原始错误: {_e}"
     )
 
-# ── 确保 Manila 包自身可被 import ──────────────────────────────────────────
-_MANILA_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-if _MANILA_DIR not in sys.path:
-    sys.path.insert(0, _MANILA_DIR)
-
-# ── 在 game.py 被 import 之前，把 ui 模块替换为 shim ─────────────────────
-# game.py 顶层做 import ui，Python 会查 sys.modules['ui']。
-# 若此时 shim 已注入，则 game 模块拿到的是 shim 代理，而非真实 gui/ui.py。
-from online import _ui_shim as _shim_module   # noqa: E402
-if sys.modules.get("ui") is not _shim_module:
-    sys.modules["ui"] = _shim_module
-
-from constants import Goods
-from player import Player
-from ai import AIPlayer
-from game import Game             # 此时 game.py 里的 import ui 已命中 shim
+from ..constants import Goods
+from ..player import Player
+from ..ai import AIPlayer
+from ..game import Game
+from ..i18n import t
 from .state import serialize_context
 
 
 class _ManilaNetBridgeShim:
     """
     替换 gui/bridge.py，让 game.py 的 ask_*() 调用转发给 AbstractBridge.ask()。
-    同时拦截 print 输出为 bridge.log()。
+    引擎通过实例级日志回调输出到 bridge.log()。
     """
 
-    def __init__(self, abstract_bridge: AbstractBridge, players: list[Player]):
+    def __init__(self, abstract_bridge: AbstractBridge, players: list[Player], rng=None):
         self._b = abstract_bridge
         self._players = players
+        self.random = rng if rng is not None else random.Random()
+
+    def log(self, text):
+        for line in str(text).splitlines():
+            line = re.sub(r'\x1b\[[0-9;]*m', '', line).strip()
+            if line:
+                self._b.log(line, "normal")
 
     def _player_idx(self, player_name: str) -> int:
         for i, p in enumerate(self._players):
@@ -75,13 +72,8 @@ class _ManilaNetBridgeShim:
     def _good_name(self, g): return g.value if g else ""
     def player_str(self, p, *a): return p.name if p else "?"
 
-    # 兼容 t() 国际化调用——使用真实翻译，失败时原样返回 key
     def t(self, key, **kw):
-        try:
-            from i18n import t as _t
-            return _t(key, **kw)
-        except Exception:
-            return key
+        return t(key, **kw)
 
     # ── ask_* → AbstractBridge.ask() ────────────────────────────────────
 
@@ -136,9 +128,8 @@ class _ManilaNetBridgeShim:
             except (ValueError, KeyError):
                 pass
         # 默认随机放置
-        import random as _r
         positions = list(range(1, count + 1))
-        _r.shuffle(positions)
+        self.random.shuffle(positions)
         return {g: p for g, p in zip(active_goods, positions)}
 
     def ask_deploy_position(self, player_name, ships, board,
@@ -273,51 +264,23 @@ class ManilaGame(AbstractGame):
         self._game: Game = None
         self._players: list[Player] = []
         self._shim: _ManilaNetBridgeShim = None
+        self._random = random.Random()
 
     def setup(self, player_names: list, human_flags: list) -> None:
         self._players = [
             Player(name, len(player_names), is_human=is_human)
             if is_human
-            else AIPlayer(name, len(player_names))
+            else AIPlayer(name, len(player_names), rng=self._random)
             for name, is_human in zip(player_names, human_flags)
         ]
-        self._shim = _ManilaNetBridgeShim(self.bridge, self._players)
-        # 更新 shim 代理指向当前对局的 _ManilaNetBridgeShim
-        _shim_module._current_shim = self._shim
-        self._game = Game(self._players)
+        self._shim = _ManilaNetBridgeShim(self.bridge, self._players, self._random)
+        self._game = Game(self._players, ui_bridge=self._shim, rng=self._random,
+                          log=self._shim.log, save_logs=False)
 
     def run(self) -> None:
-        import sys as _sys, re as _re
-
-        class _BridgePrint:
-            """将 game.py print() 输出重定向到 bridge.log()"""
-            def __init__(self, bridge):
-                self._bridge = bridge
-                self._buf = ''
-            def write(self, s):
-                self._buf += s
-                while '\n' in self._buf:
-                    line, self._buf = self._buf.split('\n', 1)
-                    line = _re.sub(r'\x1b\[[0-9;]*m', '', line).strip()
-                    if line:
-                        self._bridge.log(line, 'normal')
-                return len(s)
-            def flush(self):
-                if self._buf.strip():
-                    line = _re.sub(r'\x1b\[[0-9;]*m', '', self._buf).strip()
-                    if line:
-                        self._bridge.log(line, 'normal')
-                    self._buf = ''
-
-        old_stdout = _sys.stdout
-        _sys.stdout = _BridgePrint(self.bridge)
-        try:
-            seed = random.randint(0, 2**31 - 1)
-            random.seed(seed)
-            self._game.run()
-        finally:
-            _sys.stdout.flush()
-            _sys.stdout = old_stdout
+        if self._game is None:
+            raise RuntimeError("请先调用 setup()")
+        self._game.run()
 
     def get_state(self) -> dict:
         """直接从 self._game 读取状态，不依赖 gui.bridge.game_context。"""
@@ -340,7 +303,7 @@ class ManilaGame(AbstractGame):
             p = self._players[player_idx]
             if not isinstance(p, AIPlayer):
                 # 将断线的真人玩家升级为 AIPlayer，保留所有游戏状态
-                ai = AIPlayer(p.name, len(self._players))
+                ai = AIPlayer(p.name, len(self._players), rng=self._random)
                 ai.__dict__.update(p.__dict__)
                 ai.is_human = False
                 self._players[player_idx] = ai

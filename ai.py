@@ -11,16 +11,22 @@ from __future__ import annotations
 import math
 import random
 from typing import Optional
-from constants import CFG, Goods
-from player import Player
-from market import Market
+if __package__:
+    from .constants import CFG, Goods
+    from .player import Player
+    from .market import Market
+else:
+    from constants import CFG, Goods
+    from player import Player
+    from market import Market
 
 
 class AIPlayer(Player):
     """AI 玩家，自动做出所有决策。"""
 
-    def __init__(self, name: str, player_count: int) -> None:
+    def __init__(self, name: str, player_count: int, rng=None) -> None:
         super().__init__(name, player_count, is_human=False)
+        self.random = rng if rng is not None else random.Random()
 
     # ── 内部辅助：概率估算 ────────────────────────────────────────────────────
 
@@ -80,7 +86,7 @@ class AIPlayer(Player):
         next_bid = current_bid + 1
         if next_bid > max_willing or next_bid > self.money:
             return 0
-        if random.random() < 0.65:
+        if self.random.random() < 0.65:
             return next_bid
         return 0
 

@@ -1,6 +1,9 @@
 """player.py — 玩家类"""
 from __future__ import annotations
-from constants import CFG, Goods
+if __package__:
+    from .constants import CFG, Goods
+else:
+    from constants import CFG, Goods
 
 
 class Player:

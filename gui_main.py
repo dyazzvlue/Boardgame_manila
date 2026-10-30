@@ -13,7 +13,6 @@ import sys, os, threading
 sys.path.insert(0, os.path.dirname(__file__))
 import gui.bridge as bridge
 from gui.renderer import _NO_CLICK
-sys.modules["ui"] = bridge          # 替换 ui 模块
 import pygame
 from game import Game
 from player import Player
@@ -305,8 +304,7 @@ class GameScene:
     def run(self):
         def _run_game():
             import random
-            random.seed(bridge._game_seed)
-            game = Game(self.players)
+            game = Game(self.players, ui_bridge=bridge, rng=random.Random(bridge._game_seed))
             game.run()
         self.g_thread = threading.Thread(target=_run_game, daemon=True)
         self.g_thread.start()

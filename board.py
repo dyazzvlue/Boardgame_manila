@@ -2,8 +2,12 @@
 from __future__ import annotations
 from dataclasses import dataclass, field
 from typing import Optional
-from constants import CFG, PositionType
-from player import Player
+if __package__:
+    from .constants import CFG, PositionType
+    from .player import Player
+else:
+    from constants import CFG, PositionType
+    from player import Player
 
 
 @dataclass

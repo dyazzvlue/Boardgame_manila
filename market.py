@@ -1,12 +1,17 @@
 """market.py — 黑市股价与股票牌管理"""
 from __future__ import annotations
 import random
-from constants import CFG, Goods
-from player import Player
+if __package__:
+    from .constants import CFG, Goods
+    from .player import Player
+else:
+    from constants import CFG, Goods
+    from player import Player
 
 
 class Market:
-    def __init__(self) -> None:
+    def __init__(self, rng=None) -> None:
+        self.random = rng if rng is not None else random.Random()
         self.prices: dict[Goods, int] = {g: 0 for g in Goods}
         self.bank_stocks: dict[Goods, int] = {g: 0 for g in Goods}
 
@@ -17,7 +22,7 @@ class Market:
         draw_pool: list[Goods] = []
         for g in Goods:
             draw_pool.extend([g] * draw_count)
-        random.shuffle(draw_pool)
+        self.random.shuffle(draw_pool)
         idx = 0
         for _ in range(deal_count):
             for player in players:
